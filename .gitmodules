@@ -8,5 +8,5 @@
 	path = ModernCppCI
 	url = https://github.com/LearningByExample/ModernCppCI.git
 [submodule "CXX"]
-	path = CXX
+	path = books
 	url = C:/Users/Owner/Documents/ModernCXX/CXX
