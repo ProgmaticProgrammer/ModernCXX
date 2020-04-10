@@ -7,3 +7,6 @@
 [submodule "ModernCppCI"]
 	path = ModernCppCI
 	url = https://github.com/LearningByExample/ModernCppCI.git
+[submodule "CXX"]
+	path = CXX
+	url = C:/Users/Owner/Documents/ModernCXX/CXX
