@@ -5,3 +5,6 @@
 	path = ModernCppCI
 	url = https://github.com/LearningByExample/ModernCppCI.git
 
+[submodule "CppCoreGuidelines"]
+	path = CppCoreGuidelines
+	url = https://github.com/isocpp/CppCoreGuidelines.git
