@@ -1,6 +1,3 @@
-[submodule "CppCoreGuidelines"]
-	path = CppCoreGuidelines
-	url = https://github.com/isocpp/CppCoreGuidelines.git
 [submodule "Cpp-Idioms"]
 	path = Cpp-Idioms
 	url = https://github.com/meshell/Cpp-Idioms.git
