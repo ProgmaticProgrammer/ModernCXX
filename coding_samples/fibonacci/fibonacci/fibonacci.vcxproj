@@ -33,6 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="FibBase.h" />
     <ClInclude Include="Fibonacci.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

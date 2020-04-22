@@ -2,6 +2,8 @@
 #include <chrono>
 #include "Fibonacci.h"
 
+using namespace fibonacci_namespace;
+
 TEST(PowerTest, ZeroTest) {
 	EXPECT_EQ( 1, power(2, 0, std::multiplies<int>{}));
 	EXPECT_EQ( 0, power(2, 0, std::plus<int>{}));

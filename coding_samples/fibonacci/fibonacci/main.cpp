@@ -4,7 +4,11 @@
 #include <fstream>
 #include <chrono>
 #include "Fibonacci.h"
-
+#include "FibBase.h"
+#include <iostream>
+using std::cout;
+using std::endl;
+using namespace fibonacci_namespace;
 // calculate 1,000,000th Fibonacci number
 // save it to file and calculation time as well
 int __main() {
@@ -25,3 +29,14 @@ int __main() {
 	ofs << result << "n";
 	return 0;
 }
+
+int main() {
+	cout << FibBase<size_t, 0>::value[0] << endl;
+	cout << FibBase<size_t, 1>::value[0] << endl;
+	cout << FibBase<size_t, 2>::value[0] << endl;
+	cout << FibBase<size_t, 3>::value[0] << endl;
+	cout << FibBase<size_t, 4>::value[0] << endl;
+
+	return 0;
+}
+
