@@ -1,0 +1,32 @@
+[
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/fibonacci.dir/includes_CXX.rsp -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/fibonacci.dir/src/main.cpp.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/src/main.cpp",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/src/main.cpp"
+},
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/fibonacci_test.dir/includes_CXX.rsp -O3 -DNDEBUG   -std=gnu++11 -o CMakeFiles/fibonacci_test.dir/test/test.cpp.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/test/test.cpp",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/test/test.cpp"
+},
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-build/googlemock",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/gmock_main.dir/includes_CXX.rsp -O3 -DNDEBUG   -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googlemock/src/gmock_main.cc",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-build/googlemock",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/gmock.dir/includes_CXX.rsp -O3 -DNDEBUG   -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles/gmock.dir/src/gmock-all.cc.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googlemock/src/gmock-all.cc",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-build/googletest",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/gtest.dir/includes_CXX.rsp -O3 -DNDEBUG   -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles/gtest.dir/src/gtest-all.cc.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googletest/src/gtest-all.cc",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googletest/src/gtest-all.cc"
+},
+{
+  "directory": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-build/googletest",
+  "command": "C:/Ruby26-x64/msys64/mingw64/bin/g++.exe   @CMakeFiles/gtest_main.dir/includes_CXX.rsp -O3 -DNDEBUG   -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj -c C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googletest/src/gtest_main.cc",
+  "file": "C:/sw-testing/ModernCXX/coding_samples/fibonacci/build/googletest-src/googletest/src/gtest_main.cc"
+}
+]
