@@ -38,17 +38,14 @@ void PanelBar::RepositionExpandedPanels(Panel* fixed_panel) {
     Panel* panel = expanded_panels_[i].get();
     if (center_x <= panel->cur_panel_center() ||
         i == expanded_panels_.size() - 1) {
-      if (panel != fixed_panel) {
-        // If it has, then we reorder the panels.
-        ref_ptr<Panel> ref = expanded_panels_[fixed_index];
-        expanded_panels_.erase(expanded_panels_.begin() + fixed_index);
-        // if (i < expanded_panels_.size()) { => always true in loop
-        expanded_panels_.insert(expanded_panels_.begin() + i, ref);
-        //} else { ====> unreachable
-        //  expanded_panels_.push_back(ref);
-        //}
-      }
       break;
     }
+  }
+  // Fix me, panel is from above loop
+  if (panel != fixed_panel) {
+    // If it has, then we reorder the panels.
+    ref_ptr<Panel> ref = expanded_panels_[fixed_index];
+    expanded_panels_.erase(expanded_panels_.begin() + fixed_index);
+    expanded_panels_.insert(expanded_panels_.begin() + i, ref);
   }
 }
