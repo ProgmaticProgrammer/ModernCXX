@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <memory>
 #include <vector>
+using std::find_if;
+using std::rotate;
 using std::unique_ptr;
 using std::vector;
 class Panel {
@@ -12,6 +15,7 @@ class Panel {
 template <typename T>
 struct ref_ptr {
   T* get() const { return nullptr; }
+  T* operator->() const { return nullptr; }
 };
 
 class PanelBar {
@@ -34,15 +38,11 @@ void PanelBar::RepositionExpandedPanels(Panel* fixed_panel) {
   CHECK(fixed_panel);
   Panel* panel = nullptr;
   // Next, check if the panel has moved to the other side of another panel.
-  for (size_t i = 0; i < expanded_panels_.size(); ++i) {
-    panel = expanded_panels_[i].get();
-    if (center_x <= panel->cur_panel_center()) break;
-  }
-  // Fix me, panel is from above loop
-  if (panel != fixed_panel) {
-    // If it has, then we reorder the panels.
-    ref_ptr<Panel> ref = expanded_panels_[fixed_index];
-    expanded_panels_.erase(expanded_panels_.begin() + fixed_index);
-    expanded_panels_.insert(expanded_panels_.begin() + i, ref);
-  }
+  auto p =
+      find_if(std::begin(expanded_panels_), std::end(expanded_panels_),
+              [&](const auto& e) { return center_x <= e->cur_panel_center(); });
+
+  // If it has, then we reorder the panels.
+  auto f = expanded_panels_.begin() + fixed_index;
+  rotate(p, f, f + 1);
 }
