@@ -32,14 +32,11 @@ size_t fixed_index;
 
 void PanelBar::RepositionExpandedPanels(Panel* fixed_panel) {
   CHECK(fixed_panel);
-
+  Panel* panel = nullptr;
   // Next, check if the panel has moved to the other side of another panel.
   for (size_t i = 0; i < expanded_panels_.size(); ++i) {
-    Panel* panel = expanded_panels_[i].get();
-    if (center_x <= panel->cur_panel_center() ||
-        i == expanded_panels_.size() - 1) {
-      break;
-    }
+    panel = expanded_panels_[i].get();
+    if (center_x <= panel->cur_panel_center()) break;
   }
   // Fix me, panel is from above loop
   if (panel != fixed_panel) {
