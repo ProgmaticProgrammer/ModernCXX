@@ -6,7 +6,10 @@
         "functional": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "xutility": "cpp",
+        "*.ipp": "cpp",
+        "algorithm": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

@@ -8,3 +8,6 @@
 [submodule "CppCoreGuidelines"]
 	path = CppCoreGuidelines
 	url = https://github.com/isocpp/CppCoreGuidelines.git
+[submodule "books/src/Mastering-the-Cpp17-STL"]
+	path = books/src/Mastering-the-Cpp17-STL
+	url = https://github.com/PacktPublishing/Mastering-the-Cpp17-STL.git
