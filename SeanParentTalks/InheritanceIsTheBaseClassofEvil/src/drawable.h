@@ -43,7 +43,7 @@ private:
 	template<typename T>
 	struct model : concept_t {
 		model(T x) : data_(move(x)) { }
-		void draw_(ostream& out, size_t position) const
+		void draw_(ostream& out, size_t position) const override
 		{
 			draw(data_, out, position);
 		}
