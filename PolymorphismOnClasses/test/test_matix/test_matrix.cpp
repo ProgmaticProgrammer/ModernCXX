@@ -31,10 +31,33 @@ void test_MatrixCreation(void) {
   TEST_ASSERT_EQUAL(Color::YELLOW, matrix.at(1, 0));
   TEST_ASSERT_EQUAL(Color::ORANGE, matrix.at(1, 1));
 }
-void test_MatrixVisit(void) {
-  Matrix<Color, 2, 2> matrix = {
+// void test_MatrixVisit(void) {
+//   Matrix<Color, 2, 2> matrix = {
+//       {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
+//   for (auto it = matrix.begin(); it != matrix.end(); ++it) {
+//     switch (*it) {
+//       case Color::BLACK:
+//         std::cout << "BLACK" << std::endl;
+//         break;
+//       case Color::RED:
+//         std::cout << "RED" << std::endl;
+//         break;
+//       case Color::YELLOW:
+//         std::cout << "YELLOW" << std::endl;
+//         break;
+//       case Color::ORANGE:
+//         std::cout << "ORANGE" << std::endl;
+//         break;
+//       default:
+//         std::cout << "ORANGE" << std::endl;
+//         break;
+//     }
+//   }
+// }
+void test_ConstMatrixVisit(void) {
+  const Matrix<Color, 2, 2> matrix = {
       {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
-  for (auto it = matrix.begin(); it != matrix.end(); ++it) {
+  for (auto it = matrix.cbegin(); it != matrix.cend(); ++it) {
     switch (*it) {
       case Color::BLACK:
         std::cout << "BLACK" << std::endl;
@@ -66,6 +89,7 @@ int main(int argc, char** argv) {
   UNITY_BEGIN();
   // RUN_TEST(test_MatrixCreation);
   // RUN_TEST(test_MatrixAccess);
-  RUN_TEST(test_MatrixVisit);
+  // RUN_TEST(test_MatrixVisit);
+  RUN_TEST(test_ConstMatrixVisit);
   return UNITY_END();
 }

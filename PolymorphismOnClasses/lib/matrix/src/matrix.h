@@ -46,7 +46,7 @@ struct Matrix {
     using Point = std::pair<size_type, size_type>;
     using Track = std::size_t;
 
-    std::reference_wrapper<Matrix> container_;
+    std::reference_wrapper<const Matrix> container_;
     std::size_t where_ = 0;  // 0, 1, ...,  Row*Col-1, Row*Col
     Point cur_ = {0, 0};
     /////
@@ -76,7 +76,7 @@ struct Matrix {
     bool done_() const { return is_last_(); }
 
    public:
-    explicit iterator(std::reference_wrapper<Matrix> data,
+    explicit iterator(std::reference_wrapper<const Matrix> data,
                       size_type sentinel = 0)
         : container_(data), where_(sentinel) {}
 
@@ -103,10 +103,12 @@ struct Matrix {
   };
 
   typedef const iterator const_iterator;
-  iterator begin() noexcept { return iterator(std::ref(*this)); }
-  iterator end() noexcept { return iterator(std::ref(*this), size()); }
-  const_iterator begin() const { return iterator(std::cref(*this)); }
-  const_iterator end() const { return iterator(std::cref(*this), size()); }
+  //   iterator begin() noexcept { return iterator(std::ref(*this)); }
+  //   iterator end() noexcept { return iterator(std::ref(*this), size()); }
+  const_iterator cbegin() const noexcept { return iterator(std::cref(*this)); }
+  const_iterator cend() const noexcept {
+    return iterator(std::cref(*this), size());
+  }
 
   constexpr size_type size() const { return Row * Col; }
   constexpr bool empty() const { return size() == (size_type)0u; }
