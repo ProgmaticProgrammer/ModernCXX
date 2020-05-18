@@ -36,7 +36,7 @@ struct Matrix {
   // 2 and 3 are in track 1 because 2's row/col is (0,1) and 3's row/col is
   // (1,0) 4, 5 and 6 are in track 2 7 and 8 are in track 3 9 is in track 4
 
-  class iterator
+  class const_iterator
       : public std::iterator<std::input_iterator_tag,  // iterator_category
                              value_type,               // value_type
                              difference_type,          // difference_type
@@ -76,22 +76,22 @@ struct Matrix {
     bool done_() const { return is_last_(); }
 
    public:
-    explicit iterator(std::reference_wrapper<const Matrix> data,
+    explicit const_iterator(std::reference_wrapper<const Matrix> data,
                       size_type sentinel = 0)
         : container_(data), where_(sentinel) {}
 
-    iterator& operator++() {
+    const_iterator& operator++() {
       if (!done_()) next_();
       if (where_ < Row * Col) ++where_;
       return *this;
     }
-    iterator operator++(int) {
+    const_iterator operator++(int) {
       iterator retval = *this;
       ++(*this);
       return retval;
     }
-    bool operator==(iterator other) const { return where_ == other.where_; }
-    bool operator!=(iterator other) const { return !(*this == other); }
+    bool operator==(const_iterator other) const { return where_ == other.where_; }
+    bool operator!=(const_iterator other) const { return !(*this == other); }
 
     auto operator*() const -> const_reference {
       auto row = cur_.first;
@@ -102,12 +102,12 @@ struct Matrix {
     }
   };
 
-  typedef const iterator const_iterator;
+//   typedef const iterator const_iterator;
   //   iterator begin() noexcept { return iterator(std::ref(*this)); }
   //   iterator end() noexcept { return iterator(std::ref(*this), size()); }
-  const_iterator cbegin() const noexcept { return iterator(std::cref(*this)); }
+  const_iterator cbegin() const noexcept { return const_iterator(std::cref(*this)); }
   const_iterator cend() const noexcept {
-    return iterator(std::cref(*this), size());
+    return const_iterator(std::cref(*this), size());
   }
 
   constexpr size_type size() const { return Row * Col; }
