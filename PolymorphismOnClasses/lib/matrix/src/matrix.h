@@ -26,7 +26,7 @@ struct TwoDArray {
   // member typedefs provided through inheriting from std::iterator
   // Iterate as below for a 3X3 matrix, 1->2->3...->9
   //    col 0 1 2
-  // row     | | |
+  // row    | | |
   // 0  --  1 2 4
   // 1  --  3 5 7
   // 2  --  6 8 9
