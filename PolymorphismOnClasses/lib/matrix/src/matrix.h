@@ -1,5 +1,5 @@
-#ifndef MATRIX_HEADER
-#define MATRIX_HEADER
+#ifndef TDARRAY_HEADER
+#define TDARRAY_HEADER
 #include <array>
 #include <functional>
 #include <iterator>
@@ -8,7 +8,7 @@ using std::array;
 using std::iterator;
 
 template <class T, std::size_t Row, std::size_t Col>
-struct Matrix {
+struct TwoDArray {
   static_assert(Row >= 1);
   static_assert(Col >= 1);
 
@@ -45,7 +45,7 @@ struct Matrix {
     using Point = std::pair<size_type, size_type>;
     using Track = std::size_t;
 
-    std::reference_wrapper<Matrix> container_;
+    std::reference_wrapper<TwoDArray> container_;
     std::size_t where_ = 0;  // 0, 1, ...,  Row*Col-1, Row*Col
     Point cur_ = {0, 0};
     /////
@@ -75,7 +75,7 @@ struct Matrix {
     bool done_() const { return is_last_(); }
 
    public:
-    explicit iterator(std::reference_wrapper<Matrix> data,
+    explicit iterator(std::reference_wrapper<TwoDArray> data,
                       size_type sentinel = 0)
         : container_(data), where_(sentinel) {}
 
@@ -111,7 +111,7 @@ struct Matrix {
     using Point = std::pair<size_type, size_type>;
     using Track = std::size_t;
 
-    std::reference_wrapper<const Matrix> container_;
+    std::reference_wrapper<const TwoDArray> container_;
     std::size_t where_ = 0;  // 0, 1, ...,  Row*Col-1, Row*Col
     Point cur_ = {0, 0};
     /////
@@ -141,7 +141,7 @@ struct Matrix {
     bool done_() const { return is_last_(); }
 
    public:
-    explicit const_iterator(std::reference_wrapper<const Matrix> data,
+    explicit const_iterator(std::reference_wrapper<const TwoDArray> data,
                             size_type sentinel = 0)
         : container_(data), where_(sentinel) {}
 
@@ -188,4 +188,4 @@ struct Matrix {
   }
 };
 
-#endif  // !MATRIX_HEADER
+#endif  // !TDARRAY_HEADER

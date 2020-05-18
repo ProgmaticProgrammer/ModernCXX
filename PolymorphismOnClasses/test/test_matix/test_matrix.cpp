@@ -24,7 +24,7 @@ void test_MatrixAccess(void) {
   TEST_ASSERT_EQUAL(Color::BLACK, matrix[2][1]);
 }
 void test_MatrixCreation(void) {
-  const Matrix<Color, 2, 2> matrix = {
+  const TwoDArray<Color, 2, 2> matrix = {
       {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
   TEST_ASSERT_EQUAL(Color::BLACK, matrix.at(0, 0));
   TEST_ASSERT_EQUAL(Color::RED, matrix.at(0, 1));
@@ -32,7 +32,7 @@ void test_MatrixCreation(void) {
   TEST_ASSERT_EQUAL(Color::ORANGE, matrix.at(1, 1));
 }
 void test_MatrixVisit(void) {
-  Matrix<Color, 2, 2> matrix = {
+  TwoDArray<Color, 2, 2> matrix = {
       {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
   for (auto it = matrix.begin(); it != matrix.end(); ++it) {
     switch (*it) {
@@ -55,7 +55,7 @@ void test_MatrixVisit(void) {
   }
 }
 void test_ConstMatrixVisit(void) {
-  const Matrix<Color, 2, 2> matrix = {
+  const TwoDArray<Color, 2, 2> matrix = {
       {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
   for (auto it = matrix.cbegin(); it != matrix.cend(); ++it) {
     switch (*it) {
