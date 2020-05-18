@@ -31,9 +31,10 @@ void test_MatrixCreation(void) {
   TEST_ASSERT_EQUAL(Color::YELLOW, matrix.at(1, 0));
   TEST_ASSERT_EQUAL(Color::ORANGE, matrix.at(1, 1));
 }
-void test_MatrixVisit(void) {
-  TwoDArray<Color, 2, 2> matrix = {
-      {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
+
+template <size_t R, size_t C>
+void print(TwoDArray<Color, R, C>& matrix) {
+  std::cout << "non const print called" << std::endl;
   for (auto it = matrix.begin(); it != matrix.end(); ++it) {
     switch (*it) {
       case Color::BLACK:
@@ -54,9 +55,10 @@ void test_MatrixVisit(void) {
     }
   }
 }
-void test_ConstMatrixVisit(void) {
-  const TwoDArray<Color, 2, 2> matrix = {
-      {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
+
+template <size_t R, size_t C>
+void print(const TwoDArray<Color, R, C>& matrix) {
+  std::cout << "const print called" << std::endl;
   for (auto it = matrix.cbegin(); it != matrix.cend(); ++it) {
     switch (*it) {
       case Color::BLACK:
@@ -77,6 +79,28 @@ void test_ConstMatrixVisit(void) {
     }
   }
 }
+void test_NonConstMatrixVisit(void) {
+  TwoDArray<Color, 2, 2> matrix = {
+      {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
+  print(matrix);
+}
+void test_ConstMatrixVisit(void) {
+  const TwoDArray<Color, 2, 2> matrix = {
+      {{{Color::BLACK, Color::RED}, {Color::YELLOW, Color::ORANGE}}}};
+  print(matrix);
+}
+
+void test_DiffDimensions(void) {
+  const TwoDArray<Color, 3, 2> matrix = {{{{Color::BLACK, Color::RED},
+                                           {Color::YELLOW, Color::ORANGE},
+                                           {Color::ORANGE, Color::YELLOW}}}};
+  print(matrix);
+}
+
+void test_OneElement(void) {
+  const TwoDArray<Color, 1, 1> matrix = {{{{Color::BLACK}}}};
+  print(matrix);
+}
 /////////////////////////
 //  Setup and register //
 /////////////////////////
@@ -89,7 +113,10 @@ int main(int argc, char** argv) {
   UNITY_BEGIN();
   RUN_TEST(test_MatrixCreation);
   RUN_TEST(test_MatrixAccess);
-  RUN_TEST(test_MatrixVisit);
+  RUN_TEST(test_NonConstMatrixVisit);
   RUN_TEST(test_ConstMatrixVisit);
+  RUN_TEST(test_DiffDimensions);
+  RUN_TEST(test_OneElement);
+
   return UNITY_END();
 }
