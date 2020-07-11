@@ -9,8 +9,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "Exception.hpp"
-#include "Publisher.hpp"
+#include "../utilities/Publisher.hpp"
+#include "../utilities/Exception.hpp"
 
 namespace calculator {
 namespace model {
@@ -19,19 +19,14 @@ using utility::EventData;
 using utility::Exception;
 using utility::Publisher;
 
-// make sure each condition and message match in same order
-enum ErrorConditions { Empty = 0, TooFewArguments, Unknown };
-const static char* ErrorMessages[] = {
-    "Attempting to pop empty stack",
-    "Need at least two stack elements to swap top", "Unknown error"};
-
 /**
  * Stack Error Event, wrap error condition
  */
-class StackEventData : public EventData,
-                       public std::enable_shared_from_this<StackEventData> {
+class StackEvent : public EventData,
+                       public std::enable_shared_from_this<StackEvent> {
  public:
-  explicit StackEventData(ErrorConditions e) : err_(e) {}
+  enum ErrorConditions { Empty = 0, TooFewArguments, Unknown };
+  explicit StackEvent(ErrorConditions e) : err_(e) {}
 
   const char* message() const { return ErrorMessages[err_]; }
 
@@ -39,16 +34,18 @@ class StackEventData : public EventData,
 
   auto getSharedEventData() { return shared_from_this(); }
 
+  // make sure each condition and message match in same order
+
+  static const char* ErrorMessages[];
+  static const shared_ptr<StackEvent> EmptyError;
+  static const shared_ptr<StackEvent> TooFewArgumentsError;
+
  private:
   ErrorConditions err_;
 };
 
-const static shared_ptr<StackEventData> EmptyError =
-    std::make_shared<StackEventData>(ErrorConditions::Empty);
-const static shared_ptr<StackEventData> TooFewArgumentsError =
-    std::make_shared<StackEventData>(ErrorConditions::TooFewArguments);
 /**
- * Stack with Publish code resue
+ * Stack, the implements-a relationship with Publisher
  */
 template <class T>
 class Stack : private Publisher {
@@ -73,15 +70,15 @@ class Stack : private Publisher {
       stack_.pop_back();
       Publisher::notify(Stack::StackChanged, nullptr);
     } else {
-      Publisher::notify(Stack::StackError, EmptyError->getSharedEventData());
-      throw Exception{EmptyError->message()};
+      Publisher::notify(Stack::StackError, StackEvent::EmptyError->getSharedEventData());
+      throw Exception{StackEvent::EmptyError->message()};
     }
   }
   T& top() { return const_cast<T&>(static_cast<const Stack&>(*this).top()); }
   const T& top() const {
     if (stack_.empty()) {
-      Publisher::notify(Stack::StackError, EmptyError->getSharedEventData());
-      throw Exception{EmptyError->message()};
+      Publisher::notify(Stack::StackError, StackEvent::EmptyError->getSharedEventData());
+      throw Exception{StackEvent::EmptyError->message()};
     }
     return stack_.back();
   }
@@ -93,8 +90,8 @@ class Stack : private Publisher {
       std::iter_swap(first, second);
     } else {
       Publisher::notify(Stack::StackError,
-                        TooFewArgumentsError->getSharedEventData());
-      throw Exception{TooFewArgumentsError->message()};
+                        StackEvent::TooFewArgumentsError->getSharedEventData());
+      throw Exception{StackEvent::TooFewArgumentsError->message()};
     }
   }
 
@@ -117,6 +114,12 @@ class Stack : private Publisher {
   Stack& operator=(const Stack&) = delete;
   Stack& operator=(Stack&&) = delete;
 };
+
+template <class T>
+const string Stack<T>::StackChanged = "stackChanged";
+
+template <class T>
+const string Stack<T>::StackError = "error";
 
 }  // namespace model
 }  // namespace calculator

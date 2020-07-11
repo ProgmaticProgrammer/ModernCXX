@@ -1,13 +1,14 @@
 // add necessary includes here
 #include <algorithm>
-
-#include "Observer.hpp"
-#include "Stack.hpp"
+#include "StackTest.h"
+#include "src/backend/Stack.hpp"
+#include "src/utilities/Observer.hpp"
 
 using namespace calculator::model;
 using namespace calculator::utility;
+using ErrorConditions = StackEvent::ErrorConditions;
+using ErrorConditions = StackEvent::ErrorConditions;
 
-#include <QtTest>
 
 // Observer for changes count
 class StackChangedObserver : public Observer {
@@ -21,6 +22,7 @@ class StackChangedObserver : public Observer {
   unsigned int changeCount_ = 0;
 };
 
+
 // Observer for error information
 class StackErrorObserver : public Observer {
  public:
@@ -32,8 +34,8 @@ class StackErrorObserver : public Observer {
   }
 
   void notifyImpl(std::shared_ptr<EventData> data) {
-    std::shared_ptr<StackEventData> p =
-        std::dynamic_pointer_cast<StackEventData>(data);
+    std::shared_ptr<StackEvent> p =
+        std::dynamic_pointer_cast<StackEvent>(data);
     if (p) {
       messages_.push_back(p->message());
       errors_.push_back(p->error());
@@ -43,27 +45,6 @@ class StackErrorObserver : public Observer {
  private:
   vector<string> messages_;
   vector<ErrorConditions> errors_;
-};
-
-class StackTest : public QObject {
-  Q_OBJECT
-
- public:
-  StackTest();
-  ~StackTest();
-
- private slots:
-  void testCtor_isEmpty();
-  void testClear_becomeEmpty();
-  void testGetElements_atMostSize();
-  void testPush_savedInReverseOrder();
-  void testPop_onEmptyStack();
-  void testPop_oneAtATime();
-  void testSwapTop_whenAtLessTwo();
-  void testSwapTop_whenLessThanTwo();
-
- private:
-  // Stack<double> stack_;
 };
 
 StackTest::StackTest() {}
@@ -108,7 +89,7 @@ void StackTest::testPop_onEmptyStack() {
   }
   catch(Exception& e)
   {
-      QCOMPARE(e.what(), ErrorMessages[Empty]);
+      QCOMPARE(e.what(), StackEvent::ErrorMessages[ErrorConditions::Empty]);
   }
 }
 
@@ -143,10 +124,7 @@ void StackTest::testSwapTop_whenLessThanTwo() {
   }
   catch(Exception& e)
   {
-      QCOMPARE(e.what(), ErrorMessages[TooFewArguments]);
+      QCOMPARE(e.what(), StackEvent::ErrorMessages[ErrorConditions::TooFewArguments]);
   }
   QVERIFY((stack_.copyElements() == std::vector<double>{1.0}));
 }
-
-QTEST_MAIN(StackTest)
-#include "test_stack.moc"

@@ -11,9 +11,6 @@ class CommandTest : public QObject
 
 private slots:
     void testEnterNumber();
-
-
-
 };
 
 void CommandTest::testEnterNumber()
@@ -39,4 +36,4 @@ void CommandTest::testEnterNumber()
 
 //QTEST_APPLESS_MAIN(CommandTest)
 
-#include "test_command.moc"
+#include "CommandTest.moc"
