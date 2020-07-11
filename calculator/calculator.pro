@@ -24,4 +24,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     src/Command.hpp \
+    src/Exception.hpp \
+    src/Observer.hpp \
+    src/Publisher.hpp \
     src/Stack.hpp

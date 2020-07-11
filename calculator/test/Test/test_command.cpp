@@ -37,6 +37,6 @@ void CommandTest::testEnterNumber()
     //QCOMPARE( raw->changeCount(), 2u );
 }
 
-QTEST_APPLESS_MAIN(CommandTest)
+//QTEST_APPLESS_MAIN(CommandTest)
 
 #include "test_command.moc"

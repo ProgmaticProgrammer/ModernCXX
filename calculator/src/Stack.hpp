@@ -6,42 +6,95 @@
 #include <exception>
 #include <limits>
 #include <memory>
+#include <type_traits>
 #include <vector>
+
+#include "Exception.hpp"
+#include "Publisher.hpp"
 
 namespace calculator {
 namespace model {
 
+using utility::EventData;
+using utility::Exception;
+using utility::Publisher;
+
+// make sure each condition and message match in same order
+enum ErrorConditions { Empty = 0, TooFewArguments, Unknown };
+const static char* ErrorMessages[] = {
+    "Attempting to pop empty stack",
+    "Need at least two stack elements to swap top", "Unknown error"};
+
+/**
+ * Stack Error Event, wrap error condition
+ */
+class StackEventData : public EventData,
+                       public std::enable_shared_from_this<StackEventData> {
+ public:
+  explicit StackEventData(ErrorConditions e) : err_(e) {}
+
+  const char* message() const { return ErrorMessages[err_]; }
+
+  ErrorConditions error() const { return err_; }
+
+  auto getSharedEventData() { return shared_from_this(); }
+
+ private:
+  ErrorConditions err_;
+};
+
+const static shared_ptr<StackEventData> EmptyError =
+    std::make_shared<StackEventData>(ErrorConditions::Empty);
+const static shared_ptr<StackEventData> TooFewArgumentsError =
+    std::make_shared<StackEventData>(ErrorConditions::TooFewArguments);
+/**
+ * Stack with Publish code resue
+ */
 template <class T>
-class Stack {
+class Stack : private Publisher {
  public:
   using value_type = T;
+  // Two events for publish
+  static const std::string StackChanged;
+  static const std::string StackError;
 
-  Stack() = default;
+  Stack() {
+    registerEvent(StackChanged);
+    registerEvent(StackError);
+  }
   ~Stack() = default;
 
-  void push(T d) { stack_.push_back(std::move(d)); }
+  void push(T d) {
+    stack_.push_back(std::move(d));
+    Publisher::notify(Stack::StackChanged, nullptr);
+  }
   void pop() {
     if (!stack_.empty()) {
       stack_.pop_back();
+      Publisher::notify(Stack::StackChanged, nullptr);
+    } else {
+      Publisher::notify(Stack::StackError, EmptyError->getSharedEventData());
+      throw Exception{EmptyError->message()};
     }
   }
-  T& top() {
-    if (stack_.empty()) throw std::out_of_range("stack is empty");
-    return stack_.back();
-  }
+  T& top() { return const_cast<T&>(static_cast<const Stack&>(*this).top()); }
   const T& top() const {
-    if (stack_.empty()) throw std::out_of_range("stack is empty");
+    if (stack_.empty()) {
+      Publisher::notify(Stack::StackError, EmptyError->getSharedEventData());
+      throw Exception{EmptyError->message()};
+    }
     return stack_.back();
   }
 
   void swapTop2() {
     if (stack_.size() >= 2) {
-      auto first = stack_.back();
-      stack_.pop_back();
-      auto second = stack_.back();
-      stack_.pop_back();
-      stack_.push_back(std::move(first));
-      stack_.push_back(std::move(second));
+      auto first = std::prev(stack_.end(), 1);
+      auto second = std::prev(stack_.end(), 2);
+      std::iter_swap(first, second);
+    } else {
+      Publisher::notify(Stack::StackError,
+                        TooFewArgumentsError->getSharedEventData());
+      throw Exception{TooFewArgumentsError->message()};
     }
   }
 
