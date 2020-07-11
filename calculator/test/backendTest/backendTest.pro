@@ -12,9 +12,11 @@ win32:DEFINES += PLUGIN_TEST_FILE=\\\"plugins.win.pdp\\\"
 
 
 # Input
-HEADERS += StackTest.h
+HEADERS += StackTest.h \
+            CommandTest.h
 
-SOURCES += StackTest.cpp
+SOURCES += StackTest.cpp \
+            CommandTest.cpp
 
 unix:LIBS += -L$$HOME/lib -lpdCalcUtilities -lpdCalcBackend
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1 -lpdCalcBackend1

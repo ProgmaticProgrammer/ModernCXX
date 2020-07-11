@@ -1,17 +1,9 @@
-#include <QtTest>
-#include "Stack.hpp"
-#include "Command.hpp"
+#include "CommandTest.h"
+#include "backend/Command.hpp"
+#include "backend/Stack.hpp"
 
 using namespace calculator::model;
 using namespace calculator::controller;
-
-class CommandTest : public QObject
-{
-    Q_OBJECT
-
-private slots:
-    void testEnterNumber();
-};
 
 void CommandTest::testEnterNumber()
 {
@@ -33,7 +25,3 @@ void CommandTest::testEnterNumber()
     QVERIFY( stack.size() == 0 );
     //QCOMPARE( raw->changeCount(), 2u );
 }
-
-//QTEST_APPLESS_MAIN(CommandTest)
-
-#include "CommandTest.moc"

@@ -11,9 +11,9 @@ QT -= gui core
 QT += testlib
 
 # Input
-#HEADERS += PublisherObserverTest.h
+HEADERS += PublisherObserverTest.h
 
-#SOURCES += PublisherObserverTest.cpp
+SOURCES += PublisherObserverTest.cpp
 
 unix:LIBS += -L$$HOME/lib -lpdCalcUtilities
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1

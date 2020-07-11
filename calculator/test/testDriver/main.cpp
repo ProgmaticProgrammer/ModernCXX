@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "../utilitiesTest/PublisherObserverTest.h"
 #include "../backendTest/StackTest.h"
-
+#include "../backendTest/CommandTest.h"
 #include <iostream>
 #include <QStringList>
 #include <unordered_map>
@@ -39,11 +39,14 @@ int main(int argc, char* argv[])
 
     std::unordered_map<std::string, int> passFail;
 
-//    PublisherObserverTest pot;
-//    passFail["PublisherObserverTest"] = QTest::qExec(&pot, args);
+    PublisherObserverTest pot;
+    passFail["PublisherObserverTest"] = QTest::qExec(&pot, args);
 
     StackTest st;
     passFail["StackTest"] = QTest::qExec(&st, args);
+
+    CommandTest ct;
+    passFail["CommandTest"] = QTest::qExec(&ct, args);
 
     cout << endl;
     int errors = 0;
