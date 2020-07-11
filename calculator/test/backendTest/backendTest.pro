@@ -12,7 +12,8 @@ win32:DEFINES += PLUGIN_TEST_FILE=\\\"plugins.win.pdp\\\"
 
 
 # Input
-HEADERS += StackTest.h \
+HEADERS += StackEventsObserver.h \
+            StackTest.h \
             CommandTest.h
 
 SOURCES += StackTest.cpp \

@@ -51,7 +51,7 @@ template <class T>
 class Stack : private Publisher {
  public:
   using value_type = T;
-  // Two events for publish
+  // Two subjects for observers who're interested in
   static const std::string StackChanged;
   static const std::string StackError;
 

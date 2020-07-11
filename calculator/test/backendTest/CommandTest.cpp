@@ -1,8 +1,8 @@
 #include "CommandTest.h"
 #include "backend/Command.hpp"
 #include "backend/Stack.hpp"
+#include "StackEventsObserver.h"
 
-using namespace calculator::model;
 using namespace calculator::controller;
 
 void CommandTest::testEnterNumber()
