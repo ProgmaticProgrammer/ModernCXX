@@ -51,6 +51,9 @@ template <class T>
 class Stack : private Publisher {
  public:
   using value_type = T;
+  using Publisher::attach;
+  using Publisher::detach;
+
   // Two subjects for observers who're interested in
   static const std::string StackChanged;
   static const std::string StackError;
@@ -88,6 +91,7 @@ class Stack : private Publisher {
       auto first = std::prev(stack_.end(), 1);
       auto second = std::prev(stack_.end(), 2);
       std::iter_swap(first, second);
+      Publisher::notify(Stack::StackChanged, nullptr);
     } else {
       Publisher::notify(Stack::StackError,
                         StackEvent::TooFewArgumentsError->getSharedEventData());
@@ -104,7 +108,7 @@ class Stack : private Publisher {
   }
 
   size_t size() const { return stack_.size(); }
-  void clear() { stack_.clear(); }
+  void clear() { stack_.clear(); Publisher::notify(Stack::StackChanged, nullptr);}
 
  private:
   std::deque<T> stack_;
