@@ -62,7 +62,7 @@ class Stack : private Publisher {
     registerEvent(StackChanged);
     registerEvent(StackError);
   }
-  ~Stack() = default;
+  ~Stack(){}
 
   void push(T d, bool suppressChangeEvent = false) {
     stack_.push_back(std::move(d));

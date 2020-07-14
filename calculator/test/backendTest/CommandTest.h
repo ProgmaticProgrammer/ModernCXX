@@ -7,6 +7,7 @@
 //cleanupTestCase()     - called after the last test function was executed.
 //init()                - called before each test function is executed.
 //cleanup()             - called after every test function.
+
 class CommandTest : public QObject
 {
     Q_OBJECT
