@@ -1,6 +1,8 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
+#include <memory>
+
 namespace calculator {
 namespace utility {
 
@@ -19,7 +21,7 @@ class Command {
   void undo() { undoImpl(); }
 
   // create a polymorphic copy of the command
-  Command* clone() const { return cloneImpl(); }
+  std::unique_ptr<Command> clone() const { return cloneImpl(); }
 
   // supplies a short help message for the command
   const char* helpMessage() const { return helpMessageImpl(); }
@@ -36,7 +38,7 @@ class Command {
 
   virtual void executeImpl() = 0;
   virtual void undoImpl() = 0;
-  virtual Command* cloneImpl() const = 0;
+  virtual std::unique_ptr<Command> cloneImpl() const = 0;
   // all commands should have a short help
   virtual const char* helpMessageImpl() const noexcept = 0;
 

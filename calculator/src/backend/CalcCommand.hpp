@@ -31,11 +31,11 @@ class EnterNumber : public CalculatorCommand<M>
 public:
     EnterNumber(T num, M& m):CalculatorCommand<M>(m),num_(num){}
     ~EnterNumber()=default;
+    EnterNumber(const EnterNumber&)=default;
 private:
     EnterNumber(EnterNumber&&) = delete;
     EnterNumber& operator=(const EnterNumber&) = delete;
     EnterNumber& operator=(EnterNumber&&) = delete;
-    EnterNumber(const EnterNumber&)=default;
 
     using CalculatorCommand<M>::model_;
 
@@ -47,9 +47,9 @@ private:
     {
         model_.pop();
     }
-    Command* cloneImpl() const
+    std::unique_ptr<Command> cloneImpl() const
     {
-        return new EnterNumber(*this);
+        return std::make_unique<EnterNumber>(*this);
     }
     const char* helpMessageImpl() const noexcept override
     {
@@ -67,12 +67,12 @@ class SwapTopOfStack : public CalculatorCommand<M>
 public:
     SwapTopOfStack(M& m):CalculatorCommand<M>(m) {}
     ~SwapTopOfStack()=default;
-
+    SwapTopOfStack(const SwapTopOfStack&)=default;
 private:
     SwapTopOfStack(SwapTopOfStack&&) = delete;
     SwapTopOfStack& operator=(const SwapTopOfStack&) = delete;
     SwapTopOfStack& operator=(SwapTopOfStack&&) = delete;
-    SwapTopOfStack(const SwapTopOfStack&)=default;
+
 
     using CalculatorCommand<M>::model_;
 
@@ -95,9 +95,9 @@ private:
         model_.swapTop2();
     }
 
-    Command* cloneImpl() const override
+    std::unique_ptr<Command> cloneImpl() const override
     {
-        return new SwapTopOfStack{*this};
+        return std::make_unique<SwapTopOfStack>(*this);
     }
 
     const char* helpMessageImpl() const noexcept override
