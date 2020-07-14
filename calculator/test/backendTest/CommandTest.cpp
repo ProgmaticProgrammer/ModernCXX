@@ -4,11 +4,27 @@
 #include "StackEventsObserver.h"
 
 using namespace calculator::controller;
+using namespace calculator::model;
 
+void CommandTest::initTestCase()
+{}
+void CommandTest::cleanupTestCase()
+{}
+void CommandTest::init()
+{
+
+}
+void CommandTest::cleanup()
+{
+
+}
 void CommandTest::testEnterNumber()
 {
-    Stack<double> stack;
+    using Model = Stack<double>;
+    Model stack;
     double number = 7.3;
+    auto observer = std::make_shared<StackChangedObserver>("StackChangedObserver");
+    stack.attach( Model::StackChanged, shared_ptr<Observer>{observer} );
 
     EnterNumber<double> en{number, stack};
 
@@ -18,10 +34,12 @@ void CommandTest::testEnterNumber()
 
     QVERIFY( stack.size() == 1 );
     QCOMPARE(stack.top(), number );
-    //QVERIFY( raw->changeCount() == 1 );
+    QVERIFY( observer->changeCount() == 1 );
 
     command.undo();
 
     QVERIFY( stack.size() == 0 );
-    //QCOMPARE( raw->changeCount(), 2u );
+    QCOMPARE( observer->changeCount(), 2u );
 }
+void CommandTest::testEnterNumberClone()
+{}
