@@ -12,7 +12,7 @@ win32:DEFINES += _USE_MATH_DEFINES
 
 # Input
 HEADERS += Stack.hpp \
-    Command.hpp
+    CalcCommand.hpp
 
 SOURCES += Stack.cpp
 

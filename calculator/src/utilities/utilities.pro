@@ -12,5 +12,6 @@ DEFINES += BUILDING_UTILITIES
 # Input
 HEADERS += Exception.hpp \
            Observer.hpp \
-           Publisher.hpp
+           Publisher.hpp \
+           Command.hpp
 

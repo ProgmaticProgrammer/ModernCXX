@@ -1,7 +1,7 @@
 #include "CommandTest.h"
 
 #include "StackEventsObserver.h"
-#include "backend/Command.hpp"
+#include "backend/CalcCommand.hpp"
 #include "backend/Stack.hpp"
 
 using namespace calculator::controller;
