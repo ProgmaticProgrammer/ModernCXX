@@ -24,7 +24,7 @@
 #include "src/utilities/Exception.hpp"
 #include "src/utilities/Observer.hpp"
 
-class ConcretePublisher;
+//class ConcretePublisher;
 
 class PublisherObserverTest : public QObject
 {
@@ -41,7 +41,7 @@ private slots:
     void testGetState();
     
 private:
-    ConcretePublisher* publisher_;
+    //ConcretePublisher* publisher_;
 };
 
 #endif

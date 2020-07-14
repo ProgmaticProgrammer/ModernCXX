@@ -130,14 +130,16 @@ void ConcreteObserver::notifyImpl(std::shared_ptr<EventData> data)
     return;
 }
 
+std::unique_ptr<ConcretePublisher> publisher_ = nullptr;
+
 void PublisherObserverTest::init()
 {
-    publisher_ = new ConcretePublisher;
+    publisher_.reset(new ConcretePublisher);
 }
 
 void PublisherObserverTest::cleanup()
 {
-    delete publisher_;
+    publisher_.reset();
 }
 
 void PublisherObserverTest::testRegister()
@@ -206,11 +208,11 @@ void PublisherObserverTest::testAttachObservers()
 void PublisherObserverTest::testRaiseEvent()
 {
     // bad form (holding raw ptr to shared_ptr) for real code--ok for testing
-    auto p1 = new ConcreteObserver{"observerOne"};
-    auto p2 = new ConcreteObserver{"observerTwo"};
+    auto p1 = make_shared<ConcreteObserver>("observerOne");
+    auto p2 = make_shared<ConcreteObserver>("observerTwo");
 
-    publisher_->attach("multipleEventOne", shared_ptr<Observer>{p1});
-    publisher_->attach("multipleEventOne", shared_ptr<Observer>{p2});
+    publisher_->attach("multipleEventOne", p1);
+    publisher_->attach("multipleEventOne", p2);
 
     // check that event has not been raised
     QCOMPARE(p1->notified(), false);
@@ -246,7 +248,7 @@ void PublisherObserverTest::testDetachObservers()
 
     // detach event
     //QVERIFY(p1 == nullptr);
-    auto p1 = publisher_->detach("multipleEventOne", "observerOne");
+    publisher_->detach("multipleEventOne", "observerOne");
 
     // check the correct observer remains
     obsSetMultipleEventOne = publisher_->listEventObservers("multipleEventOne");
@@ -255,7 +257,7 @@ void PublisherObserverTest::testDetachObservers()
     QCOMPARE( obsSetMultipleEventOne.find("observerOne"), end);
 
     // check the the returned pointer exists and is the correct one
-    QVERIFY( p1 != nullptr );
+    //QVERIFY( p1 != nullptr );
     //QCOMPARE( p1.get(), raw );
 
     // check error condition on detaching something not being observed
@@ -282,10 +284,10 @@ void PublisherObserverTest::testDetachObservers()
 
 void PublisherObserverTest::testGetState()
 {
-    auto raw = new ConcreteObserver{"observer"};
+    auto raw = std::make_shared<ConcreteObserver>("observer");
     QCOMPARE(raw->state(), string{""});
 
-    publisher_->attach("singleEvent", shared_ptr<Observer>{raw});
+    publisher_->attach("singleEvent", raw);
     publisher_->notify( "singleEvent", std::make_shared<StringEventData>( "sample state" ) );
 
     QCOMPARE(raw->state(), string{"sample state"});

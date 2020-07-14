@@ -40,6 +40,7 @@ using std::ostringstream;
 using std::set;
 using std::string;
 using std::vector;
+using std::weak_ptr;
 using std::shared_ptr;
 
 namespace calculator {
@@ -51,7 +52,7 @@ class EventData {
 };
 
 class Publisher {
-  using ObserversList = std::unordered_map<string, shared_ptr<Observer>>;
+  using ObserversList = std::unordered_map<string, weak_ptr<Observer>>;
   using Events = std::unordered_map<string, ObserversList>;
 
  public:
@@ -62,14 +63,16 @@ class Publisher {
     auto ev = findCheckedEvent(eventName);
     auto& obsList = ev->second;
 
-    auto obs = obsList.find(observer->name());
+    auto name = observer->name();
+
+    auto obs = obsList.find(name);
     if (obs != obsList.end())
       throw Exception("Observer already attached to publisher");
 
-    obsList.insert(std::make_pair(observer->name(), observer));
+    obsList.insert(std::make_pair(std::move(name), weak_ptr<Observer>(observer)));
   }
 
-  std::shared_ptr<Observer> detach(const std::string& eventName,
+  void detach(const std::string& eventName,
                                    const std::string& observer) {
     auto ev = findCheckedEvent(eventName);
     auto& obsList = ev->second;
@@ -78,10 +81,7 @@ class Publisher {
     if (obs == obsList.end())
       throw Exception("Cannot detach observer because observer not found");
 
-    auto tmp = obs->second;
     obsList.erase(obs);
-
-    return tmp;
   }
 
   std::set<std::string> listEvents() const {
@@ -90,6 +90,7 @@ class Publisher {
 
     return tmp;
   }
+
   std::set<std::string> listEventObservers(const std::string& eventName) const {
     auto ev = findCheckedEvent(eventName);
 
@@ -102,11 +103,15 @@ class Publisher {
  protected:
   ~Publisher() = default;
 
-  void notify(const string& eventName,const shared_ptr<EventData> d) const {
+  void notify(const string& eventName, const shared_ptr<EventData> d) const {
     auto ev = findCheckedEvent(eventName);
-    const auto& obsList = ev->second;
+    auto& obsList = ev->second;
 
-    for (const auto& obs : obsList) obs.second->onNotify(d);
+    for (auto& obs : obsList)
+    {
+        if (auto observe = obs.second.lock())
+            observe->onNotify(d);
+    }
   }
 
   void registerEvent(const std::string& eventName) {
