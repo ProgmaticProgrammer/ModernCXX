@@ -21,5 +21,9 @@ private slots:
     void testEnterNumber();
     void testEnterNumberClone();
 
+    void testSwapTopOfStackPreconditions();
+    void testSwapTopOfStackClone();
+    void testSwapTopOfStack();
+
 };
 #endif
