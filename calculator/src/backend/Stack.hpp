@@ -64,14 +64,14 @@ class Stack : private Publisher {
   }
   ~Stack() = default;
 
-  void push(T d) {
+  void push(T d, bool suppressChangeEvent = false) {
     stack_.push_back(std::move(d));
-    Publisher::notify(Stack::StackChanged, nullptr);
+    if(!suppressChangeEvent) Publisher::notify(Stack::StackChanged, nullptr);
   }
-  void pop() {
+  void pop(bool suppressChangeEvent = false) {
     if (!stack_.empty()) {
       stack_.pop_back();
-      Publisher::notify(Stack::StackChanged, nullptr);
+      if(!suppressChangeEvent) Publisher::notify(Stack::StackChanged, nullptr);
     } else {
       Publisher::notify(Stack::StackError, StackEvent::EmptyError->getSharedEventData());
       throw Exception{StackEvent::EmptyError->message()};
@@ -108,7 +108,10 @@ class Stack : private Publisher {
   }
 
   size_t size() const { return stack_.size(); }
-  void clear() { stack_.clear(); Publisher::notify(Stack::StackChanged, nullptr);}
+  void clear() {
+      stack_.clear();
+      Publisher::notify(Stack::StackChanged, nullptr);
+  }
 
  private:
   std::deque<T> stack_;

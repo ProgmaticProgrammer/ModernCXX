@@ -15,15 +15,15 @@ public:
 
     void execute(){
         checkPreconditionsImpl();
-        executeImp();
+        executeImpl();
     }
 
     void undo(){
-        undoImp();
+        undoImpl();
     }
 
     Command* clone() const {
-        return cloneImp();
+        return cloneImpl();
     }
 
 protected:
@@ -32,9 +32,9 @@ protected:
 
 private:
     virtual void checkPreconditionsImpl() const {}
-    virtual void executeImp() = 0;
-    virtual void undoImp() = 0;
-    virtual Command* cloneImp() const = 0;
+    virtual void executeImpl() = 0;
+    virtual void undoImpl() = 0;
+    virtual Command* cloneImpl() const = 0;
 
     Command(Command&&) = delete;
     Command& operator=(const Command&) = delete;
@@ -52,9 +52,9 @@ private:
         num_(rhs.num_),
         model_(rhs.model_) {}
 
-    void executeImp() override {model_.push(num_);}
-    void undoImp() override {model_.pop();}
-    Command* cloneImp() const { return new EnterNumber(*this); }
+    void executeImpl() override {model_.push(num_);}
+    void undoImpl() override {model_.pop();}
+    Command* cloneImpl() const { return new EnterNumber(*this); }
 private:
     T num_;
     model::Stack<T>& model_;
