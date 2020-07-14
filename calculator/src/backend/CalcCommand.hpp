@@ -19,8 +19,13 @@ template<class M>
 class CalculatorCommand : public Command
 {
 protected:
-    M& model_;
     CalculatorCommand(M& m):model_(m){}
+
+    M& getModel() { return model_.get(); }
+    const M& getModel() const { return model_.get(); }
+
+private:
+    std::reference_wrapper<M> model_;
 };
 
 // accepts a number from input and adds it to the stack
@@ -37,15 +42,15 @@ private:
     EnterNumber& operator=(const EnterNumber&) = delete;
     EnterNumber& operator=(EnterNumber&&) = delete;
 
-    using CalculatorCommand<M>::model_;
+    using CalculatorCommand<M>::getModel;
 
     void executeImpl() override
     {
-        model_.push(num_);
+        getModel().push(num_);
     }
     void undoImpl() override
     {
-        model_.pop();
+        getModel().pop();
     }
     std::unique_ptr<Command> cloneImpl() const
     {
@@ -74,25 +79,25 @@ private:
     SwapTopOfStack& operator=(SwapTopOfStack&&) = delete;
 
 
-    using CalculatorCommand<M>::model_;
+    using CalculatorCommand<M>::getModel;
 
     // throws an exception if the stack size is less than two
     void checkPreconditionsImpl() const override
     {
-        if( model_.size() < 2 )
+        if( getModel().size() < 2 )
             throw Exception{"Stack must have 2 elements"};
     }
 
     // swaps the top two stack positions
     void executeImpl() noexcept override
     {
-        model_.swapTop2();
+        getModel().swapTop2();
     }
 
     // reverses the swap operation
     void undoImpl() noexcept override
     {
-        model_.swapTop2();
+        getModel().swapTop2();
     }
 
     std::unique_ptr<Command> cloneImpl() const override
