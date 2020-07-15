@@ -91,7 +91,14 @@ public:
     }
 
     // prints help for command
-    void printHelp(const std::string& command, std::ostream&) const;
+    void printHelp(const std::string& command, std::ostream&os) const
+    {
+        auto it = repository_.find(command);
+        if(it != repository_.end())
+            os << command << ": " << it->second->helpMessage();
+        else
+            os << command << ": no help entry found";
+    }
 
     // clears all commands; mainly needed for testing
     void clear() { repository_.clear(); }
