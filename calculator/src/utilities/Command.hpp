@@ -26,6 +26,10 @@ class Command {
   // supplies a short help message for the command
   const char* helpMessage() const { return helpMessageImpl(); }
 
+  // Deletes commands. This should only be overridden in plugins. By default,
+  // simply deletes command. In plugins, delete must happen in the plugin.
+  virtual void deallocate() {delete this;}
+
  protected:
   Command() = default;
   Command(const Command&) = default;
@@ -46,6 +50,24 @@ class Command {
   Command& operator=(const Command&) = delete;
   Command& operator=(Command&&) = delete;
 };
+
+inline void CommandDeleter(Command* p)
+{
+    p->deallocate();
+}
+
+using CommandPtr = std::unique_ptr<Command, decltype(&CommandDeleter)>;
+
+template<typename T, typename... Args>
+auto MakeCommandPtr(Args&&... args)
+{
+    return CommandPtr(new T(std::forward<Args>(args)...), &CommandDeleter);
+}
+
+inline auto MakeCommandPtr(Command* p)
+{
+    return CommandPtr(p, &CommandDeleter);
+}
 
 }  // namespace utility
 }  // namespace calculator

@@ -20,6 +20,7 @@
 #include "../utilitiesTest/PublisherObserverTest.h"
 #include "../backendTest/StackTest.h"
 #include "../backendTest/CommandTest.h"
+#include "../backendTest/CommandRepositoryTest.h"
 #include <iostream>
 #include <QStringList>
 #include <unordered_map>
@@ -47,6 +48,9 @@ int main(int argc, char* argv[])
 
     CommandTest ct;
     passFail["CommandTest"] = QTest::qExec(&ct, args);
+
+    CommandRepositoryTest crt;
+    passFail["CommandRepositoryTest"] = QTest::qExec(&crt, args);
 
     cout << endl;
     int errors = 0;
