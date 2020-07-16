@@ -1,6 +1,6 @@
 #include "CommandTest.h"
 
-#include "StackEventsObserver.h"
+#include "ModelEventsObserver.h"
 #include "backend/CalcCommand.hpp"
 #include "backend/CalcModel.hpp"
 

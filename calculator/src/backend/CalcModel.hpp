@@ -47,7 +47,7 @@ class StackEvent : public EventData,
 /**
  * Stack, the implements-a relationship with Publisher
  */
-template <class T>
+template <class T=double>
 class CalcModel : private Publisher {
  public:
   using value_type = T;

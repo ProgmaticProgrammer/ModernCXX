@@ -12,16 +12,18 @@ win32:DEFINES += PLUGIN_TEST_FILE=\\\"plugins.win.pdp\\\"
 
 
 # Input
-HEADERS += StackEventsObserver.h \
-            StackTest.h \
+HEADERS += \
             CommandTest.h \
             CommandRepositoryTest.h \
-            CommandManagerTest.h
+            CommandManagerTest.h \
+            ModelEventsObserver.h \
+            ModelTest.h
 
-SOURCES += StackTest.cpp \
+SOURCES += \
             CommandTest.cpp \
             CommandRepositoryTest.cpp \
-            CommandManagerTest.cpp
+            CommandManagerTest.cpp \
+            ModelTest.cpp
 
 unix:LIBS += -L$$HOME/lib -lpdCalcUtilities -lpdCalcBackend
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1 -lpdCalcBackend1

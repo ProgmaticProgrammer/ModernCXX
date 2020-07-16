@@ -18,7 +18,7 @@
 
 #include <QtTest/QtTest>
 #include "../utilitiesTest/PublisherObserverTest.h"
-#include "../backendTest/StackTest.h"
+#include "../backendTest/ModelTest.h"
 #include "../backendTest/CommandTest.h"
 #include "../backendTest/CommandRepositoryTest.h"
 #include "../backendTest/CommandManagerTest.h"
