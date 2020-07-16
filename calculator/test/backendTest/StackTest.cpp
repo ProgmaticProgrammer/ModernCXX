@@ -7,7 +7,7 @@ StackTest::StackTest() {}
 
 StackTest::~StackTest() {}
 
-using Model = Stack<double>;
+using Model = CalcModel<double>;
 
 void StackTest::testCtor_isEmpty() {
   Model stack_;
@@ -19,7 +19,7 @@ void StackTest::testClear_becomeEmpty() {
   Model stack_;
 
   auto observer = std::make_shared<StackChangedObserver>("StackChangedObserver");
-  stack_.attach( Model::StackChanged, shared_ptr<Observer>{observer} );
+  stack_.attach( Model::ModelChanged, shared_ptr<Observer>{observer} );
 
   stack_.push(1.0);
   QCOMPARE(observer->changeCount(), 1u);
@@ -32,7 +32,7 @@ void StackTest::testClear_becomeEmpty() {
   QCOMPARE(observer->changeCount(), 3u);
 
   QVERIFY(stack_.size() == 0);
-  stack_.detach(Model::StackChanged, "StackChangedObserver");
+  stack_.detach(Model::ModelChanged, "StackChangedObserver");
 }
 
 void StackTest::testGetElements_atMostSize() {

@@ -8,7 +8,7 @@ using namespace calculator::controller;
 using namespace calculator::model;
 using std::unique_ptr;
 
-using Model = Stack<double>;
+using Model = CalcModel<double>;
 
 std::unique_ptr<Model> model{nullptr};
 std::shared_ptr<StackChangedObserver> observer{nullptr};
@@ -20,10 +20,10 @@ void CommandTest::init() {
   model.reset(new Model());
   observer.reset(new StackChangedObserver("StackChangedObserver"));
 
-  model->attach(Model::StackChanged, observer);
+  model->attach(Model::ModelChanged, observer);
 }
 void CommandTest::cleanup() {
-  model->detach(Model::StackChanged, "StackChangedObserver");
+  model->detach(Model::ModelChanged, "StackChangedObserver");
 
   observer.reset();
   model.reset();

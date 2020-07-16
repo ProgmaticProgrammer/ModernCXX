@@ -30,7 +30,7 @@ private:
 
 // accepts a number from input and adds it to the stack
 // no preconditions are necessary for this command
-template<class T = double, class M = model::Stack<T>>
+template<class T = double, class M = model::CalcModel<T>>
 class EnterNumber : public CalculatorCommand<M>
 {
 public:
@@ -66,7 +66,7 @@ private:
 
 // swaps two numbers on the stack
 // precondition: must have at least two elements on the stack
-template<class T = double, class M = model::Stack<T>>
+template<class T = double, class M = model::CalcModel<T>>
 class SwapTopOfStack : public CalculatorCommand<M>
 {
 public:

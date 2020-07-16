@@ -48,39 +48,39 @@ class StackEvent : public EventData,
  * Stack, the implements-a relationship with Publisher
  */
 template <class T>
-class Stack : private Publisher {
+class CalcModel : private Publisher {
  public:
   using value_type = T;
   using Publisher::attach;
   using Publisher::detach;
 
   // Two subjects for observers who're interested in
-  static const std::string StackChanged;
-  static const std::string StackError;
+  static const std::string ModelChanged;
+  static const std::string ModelError;
 
-  Stack() {
-    registerEvent(StackChanged);
-    registerEvent(StackError);
+  CalcModel() {
+    registerEvent(ModelChanged);
+    registerEvent(ModelError);
   }
-  ~Stack(){}
+  ~CalcModel(){}
 
   void push(T d, bool suppressChangeEvent = false) {
     stack_.push_back(std::move(d));
-    if(!suppressChangeEvent) Publisher::notify(Stack::StackChanged, nullptr);
+    if(!suppressChangeEvent) Publisher::notify(CalcModel::ModelChanged, nullptr);
   }
   void pop(bool suppressChangeEvent = false) {
     if (!stack_.empty()) {
       stack_.pop_back();
-      if(!suppressChangeEvent) Publisher::notify(Stack::StackChanged, nullptr);
+      if(!suppressChangeEvent) Publisher::notify(CalcModel::ModelChanged, nullptr);
     } else {
-      Publisher::notify(Stack::StackError, StackEvent::EmptyError->getSharedEventData());
+      Publisher::notify(CalcModel::ModelError, StackEvent::EmptyError->getSharedEventData());
       throw Exception{StackEvent::EmptyError->message()};
     }
   }
-  T& top() { return const_cast<T&>(static_cast<const Stack&>(*this).top()); }
+  T& top() { return const_cast<T&>(static_cast<const CalcModel&>(*this).top()); }
   const T& top() const {
     if (stack_.empty()) {
-      Publisher::notify(Stack::StackError, StackEvent::EmptyError->getSharedEventData());
+      Publisher::notify(CalcModel::ModelError, StackEvent::EmptyError->getSharedEventData());
       throw Exception{StackEvent::EmptyError->message()};
     }
     return stack_.back();
@@ -91,9 +91,9 @@ class Stack : private Publisher {
       auto first = std::prev(stack_.end(), 1);
       auto second = std::prev(stack_.end(), 2);
       std::iter_swap(first, second);
-      Publisher::notify(Stack::StackChanged, nullptr);
+      Publisher::notify(CalcModel::ModelChanged, nullptr);
     } else {
-      Publisher::notify(Stack::StackError,
+      Publisher::notify(CalcModel::ModelError,
                         StackEvent::TooFewArgumentsError->getSharedEventData());
       throw Exception{StackEvent::TooFewArgumentsError->message()};
     }
@@ -110,23 +110,23 @@ class Stack : private Publisher {
   size_t size() const { return stack_.size(); }
   void clear() {
       stack_.clear();
-      Publisher::notify(Stack::StackChanged, nullptr);
+      Publisher::notify(CalcModel::ModelChanged, nullptr);
   }
 
  private:
   std::deque<T> stack_;
 
-  Stack(const Stack&) = delete;
-  Stack(Stack&&) = delete;
-  Stack& operator=(const Stack&) = delete;
-  Stack& operator=(Stack&&) = delete;
+  CalcModel(const CalcModel&) = delete;
+  CalcModel(CalcModel&&) = delete;
+  CalcModel& operator=(const CalcModel&) = delete;
+  CalcModel& operator=(CalcModel&&) = delete;
 };
 
 template <class T>
-const string Stack<T>::StackChanged = "stackChanged";
+const string CalcModel<T>::ModelChanged = "modelChanged";
 
 template <class T>
-const string Stack<T>::StackError = "error";
+const string CalcModel<T>::ModelError = "modelError";
 
 }  // namespace model
 }  // namespace calculator
