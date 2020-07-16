@@ -65,12 +65,14 @@ private:
     void RegisterCoreCommands()
     {
 
-    //    registerCommand( "swap", MakeCommandPtr<SwapTopOfStack>() );
-    //    registerCommand( "drop", MakeCommandPtr<DropTopOfStack>() );
-    //    registerCommand( "clear", MakeCommandPtr<ClearStack>() );
+        registerCommand( "swap", MakeCommandPtr<SwapTopOfStack<>>(model_) );
+        registerCommand( "drop", MakeCommandPtr<DropTopOfStack<>>(model_) );
+        registerCommand( "clear", MakeCommandPtr<ClearStack<>>(model_) );
 
-        registerCommand( "+", MakeCommandPtr<BinaryCommand<>>("Plus", std::plus<>{}, model_) );
-    //    registerCommand( "-", MakeCommandPtr<Subtract>() );
+        registerCommand( "+", MakeCommandPtr<BinaryCommand<>>("plus", std::plus<>{}, model_) );
+        registerCommand( "-", MakeCommandPtr<BinaryCommand<>>("minus", std::minus<>{}, model_) );
+        registerCommand( "*", MakeCommandPtr<BinaryCommand<>>("multiplies", std::multiplies<>{}, model_) );
+        registerCommand( "/", MakeCommandPtr<BinaryCommand<>>("divides", std::divides<>{}, model_) );
     //    registerCommand
     //    (
     //        "*",
@@ -78,7 +80,7 @@ private:
     //        [](double d, double f){ return d * f; })
     //    );
     //    registerCommand( "/", MakeCommandPtr<Divide>() );
-    //    registerCommand( "pow", MakeCommandPtr<Power>() );
+        registerCommand( "pow", MakeCommandPtr<BinaryCommand<>>("pow", pow<double, size_t>{}, model_) );
     //    registerCommand( "root", MakeCommandPtr<Root>() );
     //    registerCommand( "sin", MakeCommandPtr<Sine>() );
     //    registerCommand( "cos", MakeCommandPtr<Cosine>() );
@@ -86,7 +88,7 @@ private:
     //    registerCommand( "arcsin", MakeCommandPtr<Arcsine>() );
     //    registerCommand( "arccos", MakeCommandPtr<Arccosine>() );
     //    registerCommand( "arctan", MakeCommandPtr<Arctangent>() );
-    //    registerCommand( "neg", MakeCommandPtr<Negate>() );
+        registerCommand( "neg", MakeCommandPtr<UnaryCommand<>>("negate", std::negate<>{}, model_) );
     //    registerCommand( "dup", MakeCommandPtr<Duplicate>() );
 
     }
