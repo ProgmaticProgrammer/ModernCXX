@@ -44,6 +44,8 @@ class CommandRepository
 {
 public:
     CommandRepository(){}
+    ~CommandRepository()=default;
+
     // register a new command for the factory: throws if a command with the
     // same name already exists...deregister first to replace a command
     void registerCmd(const std::string& name, CommandPtr c)
@@ -102,7 +104,7 @@ public:
 
     // clears all commands; mainly needed for testing
     void clear() { repository_.clear(); }
-    ~CommandRepository()=default;
+
 private:
 
     using Repository = unordered_map<string, CommandPtr>;

@@ -13,9 +13,11 @@ win32:DEFINES += _USE_MATH_DEFINES
 # Input
 HEADERS += Stack.hpp \
     CalcCommand.hpp \
-    CommandRepository.hpp
+    CommandRepository.hpp \
+    CommandManager.hpp
 
-SOURCES += Stack.cpp
+SOURCES += Stack.cpp \
+    CommandManager.cpp
 
 unix:LIBS += -ldl
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1
