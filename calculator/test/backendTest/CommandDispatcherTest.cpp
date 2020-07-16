@@ -74,7 +74,7 @@ void CommandDispatcherTest::testCommandDispatcher()
 
     ce.commandEntered("+");
 
-    QCOMPARE( ce.top(), 3.0 );
+    QCOMPARE( ce.result(), 3.0 );
 
 //    ce.commandEntered("-18.3");
 //    ce.commandEntered("swap");

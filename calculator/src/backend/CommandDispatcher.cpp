@@ -96,7 +96,7 @@ private:
     CalcModel<> model_;
 };
 
-double CommandDispatcher::top() const
+double CommandDispatcher::result() const
 {
     return pimpl_->model_.top();
 }

@@ -41,7 +41,8 @@ public:
     void commandEntered(const std::string& command);
     void RegisterCoreCommands();
 
-    double top() const;
+    // for test purpose
+    double result() const;
 private:
     CommandDispatcher(const CommandDispatcher&) = delete;
     CommandDispatcher(CommandDispatcher&&) = delete;
