@@ -11,12 +11,14 @@ win32:DESTDIR = $$HOME/bin
 win32:DEFINES += _USE_MATH_DEFINES
 
 # Input
-HEADERS += Stack.hpp \
+HEADERS += \
     CalcCommand.hpp \
+    CalcModel.hpp \
     CommandRepository.hpp \
     CommandManager.hpp
 
-SOURCES += Stack.cpp \
+SOURCES += \
+    CalcModel.cpp \
     CommandManager.cpp
 
 unix:LIBS += -ldl

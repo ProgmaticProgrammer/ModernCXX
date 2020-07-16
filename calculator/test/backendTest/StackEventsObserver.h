@@ -1,7 +1,7 @@
 #ifndef STACK_EVENTS_OB_HEADER
 #define STACK_EVENTS_OB_HEADER
 
-#include "src/backend/Stack.hpp"
+#include "src/backend/CalcModel.hpp"
 #include "src/utilities/Observer.hpp"
 
 using namespace calculator::model;

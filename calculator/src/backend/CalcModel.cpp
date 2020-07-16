@@ -1,4 +1,4 @@
-#include "Stack.hpp"
+#include "CalcModel.hpp"
 
 namespace calculator {
 namespace model {

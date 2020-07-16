@@ -2,7 +2,7 @@
 #define CALC_COMMAND_HPP
 
 #include <memory>
-#include "Stack.hpp"
+#include "CalcModel.hpp"
 #include "utilities/Command.hpp"
 
 using std::unique;

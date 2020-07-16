@@ -2,7 +2,7 @@
 
 #include "StackEventsObserver.h"
 #include "backend/CalcCommand.hpp"
-#include "backend/Stack.hpp"
+#include "backend/CalcModel.hpp"
 
 using namespace calculator::controller;
 using namespace calculator::model;
