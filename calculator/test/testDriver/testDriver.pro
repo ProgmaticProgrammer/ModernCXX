@@ -18,4 +18,4 @@ unix:LIBS += -L$$HOME/lib -lpdCalcUtilities -lpdCalcUtilitiesTest \
         -lpluginsTest
 
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1 -lpdCalcUtilitiesTest1 \
-        -lpdCalcBackend1 -lpdCalcBackendTest1
+        -lpdCalcBackend1 -lpdCalcBackendTest1 -lpdCalcFrontend1

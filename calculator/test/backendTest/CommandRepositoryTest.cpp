@@ -44,7 +44,7 @@ public:
 private:
     void executeImpl() noexcept override { }
     void undoImpl() noexcept override { }
-    unique_ptr<Command> cloneImpl() const override { return make_unique<TestCommand>(*this); }
+    CommandPtr cloneImpl() const override { return make_unique<TestCommand>(*this); }
     const char* helpMessageImpl() const noexcept override { return "Test command, do nothing."; }
 
 private:
@@ -150,14 +150,8 @@ void CommandRepositoryTest::testAllocateCommand()
     QVERIFY( testCommand != nullptr );
     QCOMPARE( testCommand->getOptionalName(), name );
 
-    try
-    {
-        clone = cv.clone("not present");
-        QVERIFY( false );
-    }
-    catch(Exception& e)
-    {
-        QCOMPARE( e.what(), "Command doesn't exist!" );
-    }
+
+    clone = cv.clone("not present");
+    QVERIFY( clone == nullptr );
 
 }

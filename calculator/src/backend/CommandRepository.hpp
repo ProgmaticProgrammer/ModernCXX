@@ -75,7 +75,7 @@ public:
             return MakeCommandPtr( command->clone().release() );
         }
         else {
-            throw Exception{ "Command doesn't exist!" };
+            return {nullptr};
         }
     }
 

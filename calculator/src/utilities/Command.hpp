@@ -1,10 +1,14 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
+#include <cstddef>
 #include <memory>
 
 namespace calculator {
 namespace utility {
+
+class Command;
+using CommandPtr = std::unique_ptr<Command/*, decltype(&CommandDeleter)*/>;
 
 // generic base class for command patter
 class Command {
@@ -21,7 +25,7 @@ class Command {
   void undo() { undoImpl(); }
 
   // create a polymorphic copy of the command
-  std::unique_ptr<Command> clone() const { return cloneImpl(); }
+  auto clone() const -> CommandPtr { return cloneImpl(); }
 
   // supplies a short help message for the command
   const char* helpMessage() const { return helpMessageImpl(); }
@@ -42,7 +46,7 @@ class Command {
 
   virtual void executeImpl() = 0;
   virtual void undoImpl() = 0;
-  virtual std::unique_ptr<Command> cloneImpl() const = 0;
+  virtual CommandPtr cloneImpl() const = 0;
   // all commands should have a short help
   virtual const char* helpMessageImpl() const noexcept = 0;
 
@@ -56,17 +60,19 @@ inline void CommandDeleter(Command* p)
     p->deallocate();
 }
 
-using CommandPtr = std::unique_ptr<Command, decltype(&CommandDeleter)>;
-
-template<typename T, typename... Args>
-auto MakeCommandPtr(Args&&... args)
+inline void CommandDeleter(decltype(nullptr))
 {
-    return CommandPtr(new T(std::forward<Args>(args)...), &CommandDeleter);
 }
 
-inline auto MakeCommandPtr(Command* p)
+template<typename T, typename... Args>
+auto MakeCommandPtr(Args&&... args) -> CommandPtr
 {
-    return CommandPtr(p, &CommandDeleter);
+    return CommandPtr(new T(std::forward<Args>(args)...)/*, &CommandDeleter*/);
+}
+
+inline auto MakeCommandPtr(Command* p) -> CommandPtr
+{
+    return CommandPtr(p/*, &CommandDeleter*/);
 }
 
 }  // namespace utility

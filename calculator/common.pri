@@ -3,7 +3,7 @@ CONFIG(release, debug|release): DEFINES += RELEASE
 VERSION = 1.0.0
 VERSION_STR = '\\"$${VERSION}\\"'
 DEFINES += PDCALC_VERSION=\"$${VERSION_STR}\"
-CONFIG += c++17
+CONFIG += c++20
 
 unix:DEFINES += POSIX
 win32:DEFINES += WIN32

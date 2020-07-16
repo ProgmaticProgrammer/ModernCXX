@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += utilities \
-           backend
+           backend \
+           frontend

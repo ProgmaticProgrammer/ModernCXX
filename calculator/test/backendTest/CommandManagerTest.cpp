@@ -44,7 +44,7 @@ public:
 private:
     void executeImpl() noexcept override { ++executeCount_; }
     void undoImpl() noexcept override { ++undoCount_; }
-    unique_ptr<Command> cloneImpl() const noexcept override { return nullptr; }
+    CommandPtr cloneImpl() const noexcept override { return nullptr; }
     const char* helpMessageImpl() const noexcept override { return ""; }
 
 private:
@@ -62,7 +62,7 @@ public:
 private:
     void executeImpl() noexcept override { }
     void undoImpl() noexcept override { }
-    unique_ptr<Command> cloneImpl() const noexcept override { return nullptr; }
+    CommandPtr cloneImpl() const noexcept override { return nullptr; }
     const char* helpMessageImpl() const noexcept override { return "TestDeleteCommand for test purpose."; }
 
 private:

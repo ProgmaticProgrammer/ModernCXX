@@ -1,7 +1,7 @@
 HOME = ../..
 include ($$HOME/common.pri)
 TEMPLATE = lib
-TARGET = pdCalcBackend
+TARGET = pdCalcFrontend
 DEPENDPATH += .
 INCLUDEPATH += . $$HOME/src
 unix:DESTDIR = $$HOME/lib
@@ -11,17 +11,10 @@ win32:DESTDIR = $$HOME/bin
 win32:DEFINES += _USE_MATH_DEFINES
 
 # Input
-HEADERS += \
-    CalcCommand.hpp \
-    CalcModel.hpp \
-    CommandRepository.hpp \
-    CommandManager.hpp \
-    CommandDispatcher.hpp
+HEADERS += UserInterface.hpp
 
-SOURCES += \
-    CalcModel.cpp \
-    CommandManager.cpp \
-    CommandDispatcher.cpp
+SOURCES += UserInterface.cpp
 
 unix:LIBS += -ldl
 win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1
+

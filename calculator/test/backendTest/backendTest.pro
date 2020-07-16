@@ -16,6 +16,7 @@ HEADERS += \
             CommandTest.h \
             CommandRepositoryTest.h \
             CommandManagerTest.h \
+            CommandDispatcherTest.h \
             ModelEventsObserver.h \
             ModelTest.h
 
@@ -23,10 +24,11 @@ SOURCES += \
             CommandTest.cpp \
             CommandRepositoryTest.cpp \
             CommandManagerTest.cpp \
+            CommandDispatcherTest.cpp \
             ModelTest.cpp
 
 unix:LIBS += -L$$HOME/lib -lpdCalcUtilities -lpdCalcBackend
-win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1 -lpdCalcBackend1
+win32:LIBS += -L$$HOME/bin -lpdCalcUtilities1 -lpdCalcBackend1 -lpdCalcFrontend1
 
 QT -= gui core
 QT += testlib
