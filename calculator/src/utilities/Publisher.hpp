@@ -24,7 +24,7 @@
 // are stored by string name in a table. Since each event may have multiple
 // observers, the table stores a collection of observers.
 
-// NOTE: This is a push model meaning it's the publisher that sents the event data
+// NOTE: This is a push model meaning it's the publisher that sends the event data
 
 #include <memory>
 #include <set>

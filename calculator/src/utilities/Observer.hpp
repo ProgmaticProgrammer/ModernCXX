@@ -27,9 +27,6 @@
 // Observer's notify, which must be implemented in the concrete observer to
 // respond to event notifications.
 
-// Note that the semantics of Publisher to to own the Observer uniquely
-// (enforced by std::unique_ptr)
-
 #include <memory>
 #include <string>
 
