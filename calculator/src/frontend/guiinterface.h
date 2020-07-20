@@ -1,94 +1,118 @@
 #ifndef GUIINTERFACE_H
 #define GUIINTERFACE_H
 
-#include <QWidget>
 #include <QToolButton>
+#include <QWidget>
+#include <cmath>
 
 QT_BEGIN_NAMESPACE
 class QLineEdit;
 QT_END_NAMESPACE
 
-class Button : public QToolButton
-{
-    Q_OBJECT
+class Button : public QToolButton {
+  Q_OBJECT
 
-public:
-    explicit Button(const QString &text, QWidget *parent = nullptr);
+ public:
+  explicit Button(const QString &text, QWidget *parent = nullptr);
 
-    QSize sizeHint() const override;
+  QSize sizeHint() const override;
 };
 
-class GuiInterface : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit GuiInterface(QWidget *parent = nullptr);
+class Model : public QObject {
+  Q_OBJECT
+ public:
+  Model()
+      : QObject(),
+        result_("0"),
+        lhs_(0.0),
+        rhs_(HUGE_VAL),
+        op_(""),
+        state_(WAITING_LHS) {}
 
-    enum State {
-        WAITING_LHS,
-        LHS_INPUTTING,
-        WAITING_RHS,
-        RHS_INPUTTING,
-        //READY,
-        //ERROR
-    };
+  enum State {
+    WAITING_LHS,
+    LHS_INPUTTING,
+    WAITING_RHS,
+    RHS_INPUTTING,
+    // READY,
+    // ERROR
+  };
 
-    QString result() const;
-    void setResult(const QString &result);
+  void reset() {
+    setResult("0");
+    setLhs(0.0);
+    setRhs(HUGE_VAL);
+    setOp("");
+    setState(WAITING_LHS);
+  }
 
-    State state() const;
-    void setState(const State& state);
+  QString result() const;
+  void setResult(const QString &result);
 
-    double lhs() const;
-    void setLhs(double lhs);
+  State state() const;
+  void setState(const State &state);
 
-    double rhs() const;
-    void setRhs(double rhs);
+  double lhs() const;
+  void setLhs(double lhs);
 
-    QString op() const;
-    void setOp(const QString &op);
+  double rhs() const;
+  void setRhs(double rhs);
 
-signals:
-    void resultChanged(QString newResult);
+  QString op() const;
+  void setOp(const QString &op);
 
-private slots:
-    void digitClicked();
-    void operatorClicked();
-    void pointClicked();
-    void equalClicked();
+ public:
+     bool checkOpPrecondition(const QString &op, double operand);
+     double doUnaryCalculation(const QString &clickedOperator, double operand);
+     double doBinaryCalculation(double);
+     bool isUnaryOp(const QString &op) const;
+     bool isBinaryOp(const QString &op) const;
+ signals:
+  void resultChanged(QString newResult);
 
-    void changeSignClicked();
+ private:
 
-    void backspaceClicked();    
-    void clear();
-    void clearAll();
 
-    void clearMemory();
-    void readMemory();
-    void setMemory();
-    void addToMemory();
-
-private:
-
-    bool checkOpPrecondition(const QString& op, double operand);
-    double doUnaryCalculation(const QString& clickedOperator, double operand);
-    double doBinaryCalculation(double);
-    bool isUnaryOp(const QString& op) const;
-    bool isBinaryOp(const QString& op) const;
-
-    Button *createButton(const QString &text, const char *member);
-
-    QLineEdit *expression;
-    QLineEdit *recentInput;
-
-    QString result_;
-    double lhs_;
-    double rhs_;
-    QString op_;
-    State state_;
-
-    enum { NumDigitButtons = 10 };
-    Button *digitButtons[NumDigitButtons];
+  QString result_;
+  double lhs_;
+  double rhs_;
+  QString op_;
+  State state_;
 };
 
-#endif // GUIINTERFACE_H
+extern Model defModel;
+
+class GuiInterface : public QWidget {
+  Q_OBJECT
+ public:
+  explicit GuiInterface(QWidget *parent = nullptr, Model *model = &defModel);
+
+ private slots:
+  void digitClicked();
+  void operatorClicked();
+  void pointClicked();
+  void equalClicked();
+
+  void changeSignClicked();
+
+  void backspaceClicked();
+  void clear();
+  void clearAll();
+
+  void clearMemory();
+  void readMemory();
+  void setMemory();
+  void addToMemory();
+
+ private:
+  Model *model_;
+  Button *createButton(const QString &text, const char *member);
+
+  QLineEdit *expression;
+  QLineEdit *recentInput;
+
+  enum { NumDigitButtons = 10 };
+  Button *digitButtons[NumDigitButtons];
+};
+
+#endif  // GUIINTERFACE_H

@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with pdCalc; if not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
-#include <memory>
+//#include <iostream>
+//#include <memory>
 //#include "backend/CommandDispatcher.h"
 //#include "backend/AppObservers.h"
 //#include "backend/Stack.h"
@@ -29,9 +29,9 @@
 // example is meant to be simple.
 //using namespace pdCalc;
 
-using std::cout;
-using std::endl;
-using std::make_unique;
+//using std::cout;
+//using std::endl;
+//using std::make_unique;
 
 int main(int argc, char* argv[])
 {
