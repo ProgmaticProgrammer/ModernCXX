@@ -92,7 +92,7 @@ GuiInterface::GuiInterface(QWidget *parent) : QWidget(parent),
 
     expression->setReadOnly(true);
     expression->setAlignment(Qt::AlignRight);
-    expression->setMaxLength(15);
+    //expression->setMaxLength(15);
 
     recentInput = new QLineEdit("0");
 
@@ -171,6 +171,26 @@ GuiInterface::GuiInterface(QWidget *parent) : QWidget(parent),
 
     connect(this,  &GuiInterface::resultChanged, recentInput, &QLineEdit::setText);
 }
+//        NUM input
+void GuiInterface::pointClicked(){
+    auto r = result();
+    if (!r.contains('.')) {
+        setResult(r + '.');
+        if (state() == WAITING_LHS) setState(LHS_INPUTTING);
+        else if (state() == WAITING_RHS) setState(RHS_INPUTTING);
+    }
+}
+
+void GuiInterface::changeSignClicked(){
+    auto r = result();
+    if (r != "0") {
+        if (r.startsWith('-')) {
+            setResult(r.remove(0, 1));
+        } else {
+            setResult(r.insert(0, '-'));
+        }
+    }
+}
 
 void GuiInterface::digitClicked(){
     Button *clickedButton = qobject_cast<Button *>(sender());
@@ -178,13 +198,13 @@ void GuiInterface::digitClicked(){
 
     switch (state()) {
     case WAITING_LHS:
-        if (digit != "0") {
+        if (digit != '0') {
             setResult(digit);
             setState(LHS_INPUTTING);
         }
         break;
     case WAITING_RHS:
-        if (digit != "0") {
+        if (digit != '0') {
             setResult(digit);
             setState(RHS_INPUTTING);
         }
@@ -197,7 +217,7 @@ void GuiInterface::digitClicked(){
         break;
     }
 }
-
+//        Operator input
 bool GuiInterface::checkOpPrecondition(const QString& op, double operand)//
 {
     if ((op == tr("\u221a") && operand < 0.0)
@@ -210,7 +230,7 @@ bool GuiInterface::checkOpPrecondition(const QString& op, double operand)//
 
 }
 
-double GuiInterface::UnaryOpCalculation(const QString& clickedOperator, double operand)
+double GuiInterface::doUnaryCalculation(const QString& clickedOperator, double operand)
 {
     double result = HUGE_VAL;
 
@@ -222,21 +242,35 @@ double GuiInterface::UnaryOpCalculation(const QString& clickedOperator, double o
         result = 1.0 / operand;
     }
 
+    setResult( QString::number( result ) );
+    if (state() == LHS_INPUTTING) {
+        setLhs( result );
+    }
+    else if (state() == RHS_INPUTTING) {
+        setRhs( result );
+    }
+
     return result;
 }
 
-double GuiInterface::doBinaryCalculation(const QString& op)
+double GuiInterface::doBinaryCalculation(double operand)
 {
     double result = HUGE_VAL;
+    QString o = op();
+    setRhs(operand);
 
-    if (op == tr("+")) {
-        result = lhs() + rhs() ;
-    } else if (op == tr("-")) {
-        result = lhs() - rhs() ;
-    } else if (op == tr("\303\227")) {
-        result = lhs() * rhs() ;
-    } else if (op == tr("\303\267")) {
-        result = lhs() / rhs() ;
+    if (o != "" && checkOpPrecondition(o, operand)) {
+        if (o == tr("+")) {
+            result = lhs() + rhs() ;
+        } else if (o == tr("-")) {
+            result = lhs() - rhs() ;
+        } else if (o == tr("\303\227")) {
+            result = lhs() * rhs() ;
+        } else if (o == tr("\303\267")) {
+            result = lhs() / rhs() ;
+        }
+        setLhs( result );
+        setResult( QString::number( result ) );
     }
 
     return result;
@@ -260,30 +294,35 @@ void GuiInterface::operatorClicked(){
     Button *clickedButton = qobject_cast<Button *>(sender());
     QString clickedOperator = clickedButton->text();
 
-    switch (state()) {
-    case WAITING_LHS://nothing
-        break;
-    case LHS_INPUTTING:
-        if (ok)
-            setLhs( conversion );
-        else // emit some error msg
-            return;
-        if (isBinaryOp( clickedOperator )) setState(WAITING_RHS);
-        break;
-    case WAITING_RHS:
-        break;
-    case RHS_INPUTTING:
-        if (ok)
-            setRhs( conversion );
-        else // emit some error msg
-            return;
+    if (isBinaryOp(clickedOperator)) {
 
-        break;
-    default:
-        break;
+        if (ok) {
+            switch (state()) {
+            case WAITING_LHS:
+            case WAITING_RHS:
+                break;
+            case LHS_INPUTTING:
+                setLhs(conversion);
+                expression->setText( expression->text() + result() + clickedOperator);
+                break;
+            case RHS_INPUTTING:
+                setRhs(conversion);
+                expression->setText( expression->text() + result() + clickedOperator);
+                doBinaryCalculation(conversion);
+                break;
+            default:
+                break;
+            }
+
+            setOp(clickedOperator);
+            setState(WAITING_RHS);
+        }
+
+    } else if (isUnaryOp(clickedOperator)) {
+
+        doUnaryCalculation(clickedOperator, conversion);
+
     }
-
-    if (isBinaryOp(clickedOperator)) setOp(clickedOperator);
 }
 
 void GuiInterface::equalClicked(){
@@ -291,30 +330,65 @@ void GuiInterface::equalClicked(){
     if (state() == RHS_INPUTTING) {
         bool ok;
         auto conversion = result().toDouble(&ok);
-        if (ok)
-            setRhs( conversion );
-        else
-            return;
+
+        if (isBinaryOp( op() )) {
+            doBinaryCalculation(conversion);
+
+            setState(WAITING_LHS);
+
+        } else {
+
+        }
+    } else if (state() == WAITING_LHS) {
+        doBinaryCalculation(rhs());
     }
 
-    if (isBinaryOp( op() ) && checkOpPrecondition(op(), rhs())) {
+    expression->clear();
+}
 
-        setLhs( doBinaryCalculation(op()) );
-        setResult( QString::number( lhs() ) );
+void GuiInterface::backspaceClicked(){
+    auto r = result();
+    auto bound = r.startsWith('-') ? 2 : 1;
 
-        if (lhs() == 0) setState(WAITING_LHS);
-        else setState(LHS_INPUTTING);
-
-    } else {
-
+    if ( bound < r.size()) {
+        r.chop(1);
+        setResult(r);
+    }
+    else {
+        setResult("0");
+        if (state()==LHS_INPUTTING) setState(WAITING_LHS);
+        else if (state()==RHS_INPUTTING) setState(WAITING_RHS);
     }
 }
-void GuiInterface::pointClicked(){}
-void GuiInterface::changeSignClicked(){}
 
-void GuiInterface::backspaceClicked(){}
-void GuiInterface::clear(){}
-void GuiInterface::clearAll(){}
+void GuiInterface::clear(){
+    expression->clear();
+    setResult("0");
+    switch (state()) {
+    case WAITING_LHS:
+    case WAITING_RHS:
+        break;
+    case LHS_INPUTTING:
+        setLhs(0.0);
+        setState(WAITING_LHS);
+        break;
+    case RHS_INPUTTING:
+        setRhs(HUGE_VAL);
+        setState(WAITING_RHS);
+        break;
+    default:
+        break;
+    }
+}
+
+void GuiInterface::clearAll(){
+    expression->clear();
+    setResult("0");
+    setLhs(0.0);
+    setRhs(HUGE_VAL);
+    setOp("");
+    setState(WAITING_LHS);
+}
 
 void GuiInterface::clearMemory(){}
 void GuiInterface::readMemory(){}

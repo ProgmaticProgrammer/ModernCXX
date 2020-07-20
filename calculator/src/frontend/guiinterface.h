@@ -1,7 +1,7 @@
 #ifndef GUIINTERFACE_H
 #define GUIINTERFACE_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 #include <QToolButton>
 
 QT_BEGIN_NAMESPACE
@@ -25,11 +25,12 @@ public:
     explicit GuiInterface(QWidget *parent = nullptr);
 
     enum State {
-        WAITING_LHS = 0,
+        WAITING_LHS,
         LHS_INPUTTING,
         WAITING_RHS,
         RHS_INPUTTING,
-        READY
+        //READY,
+        //ERROR
     };
 
     QString result() const;
@@ -70,8 +71,8 @@ private slots:
 private:
 
     bool checkOpPrecondition(const QString& op, double operand);
-    double UnaryOpCalculation(const QString& clickedOperator, double operand);
-    double doBinaryCalculation(const QString& op);
+    double doUnaryCalculation(const QString& clickedOperator, double operand);
+    double doBinaryCalculation(double);
     bool isUnaryOp(const QString& op) const;
     bool isBinaryOp(const QString& op) const;
 
