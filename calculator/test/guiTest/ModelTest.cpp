@@ -32,33 +32,39 @@ void ModelTest::init()
 void ModelTest::cleanup()
 {}
 
-void ModelTest::testCreated_AtWaitingLhsState()
+void ModelTest::test_AfterStarted_AtEmptyState()
 {
     Model model;
-    QCOMPARE(model.state(), Model::State::WAITING_LHS);
+    QCOMPARE(model.state(), Model::State::Empty);
 }
 
-void ModelTest::testOneInput_LhsAssigned()
+void ModelTest::test_AfterOneInput_LhsReady()
 {
     model.input_operand(1);
+    QCOMPARE(model.state(), Model::State::LhsReady);
     QCOMPARE(model.lhs(), 1.0);
 }
 
-void ModelTest::testOnePlusInput_LhsOpAssigned()
+void ModelTest::test_AfterOnePlusInput_WaitingForRhs()
 {
     model.input_operand(1);
     model.input_operator(Calculator::Plus);
+
+    QCOMPARE(model.state(), Model::State::WaitingForRhs);
     QCOMPARE(model.lhs(), 1.0);
     QCOMPARE(model.op(), "+");
 }
 
-void ModelTest::testOnePlusTwoInput_ResultAvailable()
+void ModelTest::test_AfterOnePlusTwoIn_EqIn_ResultAvailable()
 {
     model.input_operand(1);
     model.input_operator(Calculator::Plus);
     model.input_operand(2);
 
-    QCOMPARE(model.lhs(), 1.0);
+    model.input_operator(Calculator::Enter);
+
+    QCOMPARE(model.state(), Model::State::LhsReady);
+
     QCOMPARE(model.op(), "+");
     QCOMPARE(model.rhs(), 2.0);
 
@@ -66,7 +72,34 @@ void ModelTest::testOnePlusTwoInput_ResultAvailable()
     auto ok = model.get_result(result);
     QCOMPARE(ok, true);
     QCOMPARE(result, 3.0);
+    QCOMPARE(model.lhs(), result);
 }
+
+void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
+{
+    model.input_operand(1);
+    model.input_operator(Calculator::Plus);
+    model.input_operand(2);
+
+    model.input_operator(Calculator::Plus);
+
+    QCOMPARE(model.state(), Model::State::WaitingForRhs);
+
+    double result = 0;
+    auto ok = model.get_result(result);
+    QCOMPARE(ok, true);
+    QCOMPARE(result, 3.0);
+    QCOMPARE(model.lhs(), 3.0);
+    QCOMPARE(model.op(), "+");
+}
+
+
+
+
+
+
+
+
 
 #include <iostream>
 #include <QStringList>

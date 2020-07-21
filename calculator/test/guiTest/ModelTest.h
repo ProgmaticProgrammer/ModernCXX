@@ -30,10 +30,12 @@ private slots:
     void init();
     void cleanup();
 
-    void testCreated_AtWaitingLhsState();
-    void testOneInput_LhsAssigned();
-    void testOnePlusInput_LhsOpAssigned();
-    void testOnePlusTwoInput_ResultAvailable();
+    void test_AfterStarted_AtEmptyState();
+    void test_AfterOneInput_LhsReady();
+    void test_AfterOnePlusInput_WaitingForRhs();
+    void test_AfterOnePlusTwoIn_EqIn_ResultAvailable();
+
+    void test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult();
 
 private:
 

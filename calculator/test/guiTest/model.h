@@ -3,40 +3,27 @@
 
 #include <QObject>
 #include <cmath>
+#include <QtMath>
 
-//#include <QWidget>
-//#include <QToolButton>
-//
-// QT_BEGIN_NAMESPACE
-// class QLineEdit;
-// QT_END_NAMESPACE
-
-// class Button : public QToolButton
-//{
-//    Q_OBJECT
-
-// public:
-//    explicit Button(const QString &text, QWidget *parent = nullptr);
-
-//    QSize sizeHint() const override;
-//};
 
 class Calculator {
  public:
   virtual ~Calculator() = default;
 
   enum Operator {
-    Plus,
+    Plus = 0,
     Minus,
     Multiplies,
     Divides,
     Modulus,
     Negate,
     Pow,
-    Rec,
+    Reciproc,
     Sqrt,
-    Reciproc
+    Enter,
   };
+
+  friend QString to_string (Calculator::Operator val);
 
  public:
   void input_operand(double d) { input_operand_impl(d); }
@@ -59,14 +46,15 @@ class Model : public QObject, public Calculator {
         lhs_(0.0),
         rhs_(HUGE_VAL),
         op_(""),
-        state_(WAITING_LHS),
+        state_(Empty),
         count_(0) {}
 
   enum State {
-    WAITING_LHS,
-    LHS_INPUTTING,
-    WAITING_RHS,
-    RHS_INPUTTING,
+    Empty,
+    LhsReady,
+    WaitingForRhs,
+    BothReady,
+    Calculating,
     // READY,
     // ERROR
   };
@@ -76,56 +64,149 @@ class Model : public QObject, public Calculator {
     setLhs(0.0);
     setRhs(HUGE_VAL);
     setOp("");
-    setState(WAITING_LHS);
+    setState(Empty);
     count_ = 0;
   }
 
-  QString result() const;
+  QString result() const {return result_;}
 
  public slots:
-  void setLhs(double lhs);
-  void setRhs(double rhs);
-  void setOp(const QString &op);
+  void setLhs(double lhs) {lhs_ = lhs; setState(LhsReady);}
+  void setRhs(double rhs) {rhs_ = rhs;}
+  void setOp(const QString &op) {op_ = op;}
  signals:
   void resultChanged(QString newResult);
 
  public:  // for test
-  State state() const;
-  double lhs() const;
-  double rhs() const;
-  QString op() const;
+  State state() const {return state_;}
+  double lhs() const{return lhs_;}
+  double rhs() const{return rhs_;}
+  QString op() const{return op_;}
 
  public:
   bool passCheck() { return count_ >= 2 && op() != ""; }
 
-  double calculate() {
-    auto result = lhs() + rhs();
-    setResult(QString::number(result));
-    return result;
-  }
+
 
   void input_operand_impl(double d) override {
     ++count_;
 
     if (count_ < 2)
       setLhs(d);
-    else
+    else {
       setRhs(d);
+      setState(BothReady);
+    }
   }
-  void input_operator_impl(Operator) override { setOp("+"); }
+
+  void input_operator_impl(Operator o) override {
+      auto op_str = to_string(o);
+
+      if (isBinaryOp(op_str)) {
+          if (!op().isEmpty())  calculate();
+          setOp(op_str);
+          setState(WaitingForRhs);
+      } else if (isUnaryOp(op_str)) {
+
+      } else {
+          calculate();
+      }
+  }
+
+  double calculate() {
+      auto result = lhs() + rhs();
+      setResult(QString::number(result));
+      setLhs(result);
+      setState(LhsReady);
+      return result;
+  }
+
   bool get_result_impl(double &r) {
-    if (passCheck()) {
+    if (state() == BothReady && passCheck()) {
       r = calculate();
       return true;
-    } else
+    } else if (state() == LhsReady) {
+        r = result().toDouble();
+        return true;
+    } else if (state() == WaitingForRhs) {
+        r = lhs();
+        return true;
+    } else {
       return false;
+    }
   }
 
  private:
-  void setResult(const QString &result);
-  void setState(const State &state);
+  void setResult(const QString &result){
+      if (result_ != result) {
+          result_ = result;
+          emit resultChanged(result_);
+      }
+  }
+  void setState(const State &state){
+      state_ = state;
+  }
+
 
  private:
+ bool checkOpPrecondition(const QString& op, double operand){
+     if ((op == tr("\u221a") && operand < 0.0) ||
+         (op == tr("1/x") && operand == 0.0) ||
+         (op == tr("\303\267") && operand == 0.0)) {
+         return false;
+     } else {
+         return true;
+     }
+ }
+ double doUnaryCalculation(const QString& clickedOperator, double operand){
+     double result = HUGE_VAL;
+
+     if (clickedOperator == tr("\u221a")) {
+         result = std::sqrt(operand);
+     } else if (clickedOperator == tr("x\302\262")) {
+         result = std::pow(operand, 2.0);
+     } else if (clickedOperator == tr("1/x")) {
+         result = 1.0 / operand;
+     }
+
+     setResult(QString::number(result));
+
+     if (state() == LhsReady) {
+         setLhs(result);
+     } else if (state() == BothReady) {
+         setRhs(result);
+     }
+
+     return result;
+ }
+ double doBinaryCalculation(double operand){
+     double result = HUGE_VAL;
+     QString o = op();
+     setRhs(operand);
+
+     if (o != "" && checkOpPrecondition(o, operand)) {
+         if (o == tr("+")) {
+             result = lhs() + rhs();
+         } else if (o == tr("-")) {
+             result = lhs() - rhs();
+         } else if (o == tr("\303\227")) {
+             result = lhs() * rhs();
+         } else if (o == tr("\303\267")) {
+             result = lhs() / rhs();
+         }
+         setLhs(result);
+         setResult(QString::number(result));
+     }
+
+     return result;
+ }
+ bool isUnaryOp(const QString& op) const {
+     return op == tr("\u221a") || op == tr("1/x") || op == tr("x\302\262");
+ }
+ bool isBinaryOp(const QString& op) const {
+     return op == tr("\303\267") || op == "\303\227" || op == tr("-") ||
+            op == tr("+");
+ }
   QString result_;
   double lhs_;
   double rhs_;
