@@ -15,15 +15,16 @@ class Calculator {
     Minus,
     Multiplies,
     Divides,
-    Modulus,
+    Percent,
     Negate,
     Pow,
     Reciproc,
     Sqrt,
     Enter,
+      Unknown
   };
 
-  friend QString to_string (Calculator::Operator val);
+
 
  public:
   void input_operand(double d) { input_operand_impl(d); }
@@ -35,6 +36,9 @@ class Calculator {
   virtual void input_operator_impl(Operator) = 0;
   virtual bool get_result_impl(double &r) = 0;
 };
+
+QString to_string (Calculator::Operator val);
+Calculator::Operator to_operator (const QString& val);
 
 class Model : public QObject, public Calculator {
   Q_OBJECT
@@ -101,19 +105,21 @@ class Model : public QObject, public Calculator {
 
   void calculateAppending()
   {
-      if (!op().isEmpty())  calculate();
+      if (state()==BothReady && !op().isEmpty()) {
+          setLhs(doBinaryCalculation(to_operator(op()), lhs(), rhs()));
+      }
   }
 
   void input_operator_impl(Operator o) override {
       auto op_str = to_string(o);
 
-      if (isBinaryOp(op_str)) {
+      if (isBinaryOp(o)) {
           calculateAppending();
           setOp(op_str);
           setState(WaitingForRhs);
-      } else if (isUnaryOp(op_str)) {
+      } else if (isUnaryOp(o)) {
           if (state() == Model::State::BothReady) {
-              setRhs(doUnaryCalculation(op_str, rhs()));
+              setRhs(doUnaryCalculation(o, rhs()));
           }
       } else {
           calculate();
@@ -156,65 +162,55 @@ class Model : public QObject, public Calculator {
 
 
  private:
- bool checkOpPrecondition(const QString& op, double operand){
-     if ((op == tr("\u221a") && operand < 0.0) ||
-         (op == tr("1/x") && operand == 0.0) ||
-         (op == tr("\303\267") && operand == 0.0)) {
+ bool checkOpPrecondition(Operator op, double operand){
+     if ((op == Sqrt && operand < 0.0) ||
+         ((op == Reciproc || op == Divides) && operand == 0.0) ||
+         (op == Negate && operand != 0.0)) {
          return false;
      } else {
          return true;
      }
  }
- double doUnaryCalculation(const QString& clickedOperator, double operand){
+
+ double doUnaryCalculation(Operator o, double operand){
      double result = HUGE_VAL;
 
-     if (clickedOperator == tr("\u221a")) {
+     if (o == Sqrt) {
          result = std::sqrt(operand);
-     } else if (clickedOperator == tr("x\302\262")) {
+     } else if (o == Pow) {
          result = std::pow(operand, 2.0);
-     } else if (clickedOperator == tr("1/x")) {
+     } else if (o == Reciproc) {
          result = 1.0 / operand;
      }
 
-//     if (bUpdate) {
-//         setResult(QString::number(result));
-
-//         if (state() == LhsReady) {
-//             setLhs(result);
-//         } else if (state() == BothReady) {
-//             setRhs(result);
-//         }
-//     }
-
      return result;
  }
- double doBinaryCalculation(double operand){
-     double result = HUGE_VAL;
-     QString o = op();
-     setRhs(operand);
 
-     if (o != "" && checkOpPrecondition(o, operand)) {
-         if (o == tr("+")) {
-             result = lhs() + rhs();
-         } else if (o == tr("-")) {
-             result = lhs() - rhs();
-         } else if (o == tr("\303\227")) {
-             result = lhs() * rhs();
-         } else if (o == tr("\303\267")) {
-             result = lhs() / rhs();
-         }
-         setLhs(result);
-         setResult(QString::number(result));
-     }
+double doBinaryCalculation(Operator o, double lhs, double rhs){
+    double result = HUGE_VAL;
 
-     return result;
+    if (checkOpPrecondition(o, rhs) ) {
+        if (o == Plus) {
+            result = lhs + rhs;
+        } else if (o == Minus) {
+            result = lhs - rhs;
+        } else if (o == Multiplies) {
+            result = lhs * rhs;
+        } else if (o == Divides) {
+            result = lhs / rhs;
+        }
+    }
+
+    return result;
+}
+
+ bool isUnaryOp(Operator op) const {
+     return op == Pow || op == Reciproc || op == Sqrt || op == Negate;
  }
- bool isUnaryOp(const QString& op) const {
-     return op == tr("\u221a") || op == tr("1/x") || op == tr("x\302\262");
- }
- bool isBinaryOp(const QString& op) const {
-     return op == tr("\303\267") || op == "\303\227" || op == tr("-") ||
-            op == tr("+");
+
+ bool isBinaryOp(Operator op) const {
+     return op == Plus || op == Minus || op == Multiplies ||
+            op == Divides;
  }
   QString result_;
   double lhs_;
