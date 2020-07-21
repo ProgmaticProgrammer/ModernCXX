@@ -75,6 +75,18 @@ void ModelTest::test_AfterOnePlusTwoIn_EqIn_ResultAvailable()
     QCOMPARE(model.lhs(), result);
 }
 
+void ModelTest::test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs()
+{
+    model.input_operand(1);
+    model.input_operator(Calculator::Plus);
+    model.input_operand(2);
+
+    model.input_operator(Calculator::Pow);
+
+    QCOMPARE(model.state(), Model::State::BothReady);
+    QCOMPARE(model.rhs(), 4.0);
+}
+
 void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
 {
     model.input_operand(1);
@@ -93,7 +105,21 @@ void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
     QCOMPARE(model.op(), "+");
 }
 
+void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
+{
+    model.input_operand(1);
+    model.input_operator(Calculator::Plus);
+    model.input_operand(2);
 
+    model.input_operator(Calculator::Plus);
+    model.input_operand(3);
+    model.input_operator(Calculator::Enter);
+
+    double result = 0;
+    auto ok = model.get_result(result);
+    QCOMPARE(ok, true);
+    QCOMPARE(result, 6.0);
+}
 
 
 

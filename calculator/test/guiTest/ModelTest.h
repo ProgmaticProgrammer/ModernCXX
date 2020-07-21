@@ -35,7 +35,10 @@ private slots:
     void test_AfterOnePlusInput_WaitingForRhs();
     void test_AfterOnePlusTwoIn_EqIn_ResultAvailable();
 
+    void test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs();
     void test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult();
+
+    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix();
 
 private:
 

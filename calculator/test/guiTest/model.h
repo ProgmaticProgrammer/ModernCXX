@@ -99,15 +99,22 @@ class Model : public QObject, public Calculator {
     }
   }
 
+  void calculateAppending()
+  {
+      if (!op().isEmpty())  calculate();
+  }
+
   void input_operator_impl(Operator o) override {
       auto op_str = to_string(o);
 
       if (isBinaryOp(op_str)) {
-          if (!op().isEmpty())  calculate();
+          calculateAppending();
           setOp(op_str);
           setState(WaitingForRhs);
       } else if (isUnaryOp(op_str)) {
-
+          if (state() == Model::State::BothReady) {
+              setRhs(doUnaryCalculation(op_str, rhs()));
+          }
       } else {
           calculate();
       }
@@ -169,13 +176,15 @@ class Model : public QObject, public Calculator {
          result = 1.0 / operand;
      }
 
-     setResult(QString::number(result));
+//     if (bUpdate) {
+//         setResult(QString::number(result));
 
-     if (state() == LhsReady) {
-         setLhs(result);
-     } else if (state() == BothReady) {
-         setRhs(result);
-     }
+//         if (state() == LhsReady) {
+//             setLhs(result);
+//         } else if (state() == BothReady) {
+//             setRhs(result);
+//         }
+//     }
 
      return result;
  }
@@ -218,49 +227,5 @@ class Model : public QObject, public Calculator {
 };
 
 extern Model defModel;
-
-// class GuiInterface : public QWidget
-//{
-//    Q_OBJECT
-
-// public:
-//    explicit GuiInterface(QWidget *parent = nullptr, Model *model =
-//    &defModel);
-
-// private slots:
-//    void digitClicked();
-//    void operatorClicked();
-//    void pointClicked();
-//    void equalClicked();
-
-//    void changeSignClicked();
-
-//    void backspaceClicked();
-//    void clear();
-//    void clearAll();
-
-//    void clearMemory();
-//    void readMemory();
-//    void setMemory();
-//    void addToMemory();
-
-// private:
-
-//    bool checkOpPrecondition(const QString& op, double operand);
-//    double doUnaryCalculation(const QString& clickedOperator, double operand);
-//    double doBinaryCalculation(double);
-//    bool isUnaryOp(const QString& op) const;
-//    bool isBinaryOp(const QString& op) const;
-
-//    Button *createButton(const QString &text, const char *member);
-//    friend class GuiInterfaceTest;
-//    QLineEdit *expression;
-//    QLineEdit *recentInput;
-
-//    enum { NumDigitButtons = 10 };
-//    Button *digitButtons[NumDigitButtons];
-// private:
-//    Model *model_;
-//};
 
 #endif  // GUIINTERFACE_H
