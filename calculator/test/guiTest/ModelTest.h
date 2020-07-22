@@ -1,14 +1,14 @@
-// Copyright 2016 Adam B. Singer
-// Contact: PracticalDesignBook@gmail.com
+// Copyright 2020 Lei Zhang
+// Contact: lei.zhang.auckland@gmail.com
 //
-// This file is part of pdCalc.
+// This file is part of Calculator.
 //
-// pdCalc is free software; you can redistribute it and/or modify
+// Calculator is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
 //
-// pdCalc is distributed in the hope that it will be useful,
+// Calculator is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with pdCalc; if not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GUI_INTERFACE_TEST_H
-#define GUI_INTERFACE_TEST_H
+#ifndef MODEL_TEST_H
+#define MODEL_TEST_H
 
 #include <QtTest/QtTest>
 
@@ -30,7 +30,10 @@ private slots:
     void init();
     void cleanup();
 
+    // test start at a known state
     void test_AfterStarted_AtEmptyState();
+
+    // test normal inputs (operands+operators) gradually
     void test_AfterOneInput_LhsReady();
     void test_AfterOnePlusInput_WaitingForRhs();
     void test_AfterOnePlusTwoIn_EqIn_ResultAvailable();
@@ -39,6 +42,9 @@ private slots:
     void test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult();
 
     void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix();
+
+    // test mix operators
+    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine();
 
 private:
 

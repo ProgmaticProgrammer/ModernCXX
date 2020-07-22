@@ -1,14 +1,14 @@
-// Copyright 2016 Adam B. Singer
-// Contact: PracticalDesignBook@gmail.com
+// Copyright 2020 Lei Zhang
+// Contact: lei.zhang.auckland@gmail.com
 //
-// This file is part of pdCalc.
+// This file is part of Calculator.
 //
-// pdCalc is free software; you can redistribute it and/or modify
+// Calculator is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 3 of the License, or
 // (at your option) any later version.
 //
-// pdCalc is distributed in the hope that it will be useful,
+// Calculator is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -121,7 +121,21 @@ void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
     QCOMPARE(result, 6.0);
 }
 
+void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine()
+{
+    model.input_operand(1);
+    model.input_operator(Calculator::Plus);
+    model.input_operand(2);
 
+    model.input_operator(Calculator::Multiplies);
+    model.input_operand(3);
+    model.input_operator(Calculator::Enter);
+
+    double result = 0;
+    auto ok = model.get_result(result);
+    QCOMPARE(ok, true);
+    QCOMPARE(result, 9.0);
+}
 
 
 
