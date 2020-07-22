@@ -23,11 +23,7 @@
 #include <QtMath>
 #include <cmath>
 
-class Calculator {
- public:
-  virtual ~Calculator() = default;
-
-  enum Operator {
+enum Operator {
     Plus = 0,
     Minus,
     Multiplies,
@@ -38,33 +34,39 @@ class Calculator {
     Reciproc,
     Sqrt,
     Enter,
-    Unknown
-  };
+    UNKNOWN_OPERATOR,
+};
+using T = double;
+//template<class T=double>
+class Calculator {
+ public:
+  virtual ~Calculator() = default;
 
  public:
-  void input_operand(double d) { input_operand_impl(d); }
+  void input_operand(T d) { input_operand_impl(d); }
   void input_operator(Operator o) { input_operator_impl(o); }
-  bool get_result(double &r) { return get_result_impl(r); }
+  bool get_result(T &r) { return get_result_impl(r); }
 
  private:
-  virtual void input_operand_impl(double) = 0;
+  virtual void input_operand_impl(T) = 0;
   virtual void input_operator_impl(Operator) = 0;
-  virtual bool get_result_impl(double &r) = 0;
+  virtual bool get_result_impl(T &r) = 0;
 };
 
-QString to_string(Calculator::Operator val);
-Calculator::Operator to_operator(const QString &val);
+QString to_string(Operator val);
+Operator to_operator(const QString &val);
 
-class Model : public QObject, public Calculator {
+//template< class T=double>
+class Model : public QObject, public Calculator {//<T>
   Q_OBJECT
 
  public:
   Model()
       : QObject(),
-        result_("0"),
+        result_(0),
         lhs_(0.0),
         rhs_(HUGE_VAL),
-        op_(""),
+        op_(UNKNOWN_OPERATOR),
         state_(Empty),
         count_(0) {}
 
@@ -79,33 +81,34 @@ class Model : public QObject, public Calculator {
   };
 
   void reset() {
-    setResult("0");
+    setResult(0.0);
     setLhs(0.0);
     setRhs(HUGE_VAL);
-    setOp("");
+    setOp(UNKNOWN_OPERATOR);
     setState(Empty);
     count_ = 0;
   }
 
-  QString result() const { return result_; }
+  T result() const { return result_; }
 
  public slots:
-  void setLhs(double lhs) { lhs_ = lhs; }
-  void setRhs(double rhs) { rhs_ = rhs; }
-  void setOp(const QString &op) { op_ = op; }
+  void setLhs(T lhs) { lhs_ = lhs; }
+  void setRhs(T rhs) { rhs_ = rhs; }
+  void setOp(Operator op) { op_ = op; }
  signals:
-  void resultChanged(QString newResult);
+  //void resultChanged(T newResult);
+     void resultChanged(QString newResult);
 
  public:  // for test
   State state() const { return state_; }
-  double lhs() const { return lhs_; }
-  double rhs() const { return rhs_; }
-  QString op() const { return op_; }
+  T lhs() const { return lhs_; }
+  T rhs() const { return rhs_; }
+  Operator op() const { return op_; }
 
- public:
-  bool passCheck() { return count_ >= 2 && op() != ""; }
+ private:
 
-  void input_operand_impl(double d) override {
+// implementation of virtual funcs in Calculator interface
+  void input_operand_impl(T d) override {
     ++count_;
 
     if (count_ < 2) {
@@ -118,18 +121,10 @@ class Model : public QObject, public Calculator {
     }
   }
 
-  void calculateAppending() {
-    if (state() == BothReady && !op().isEmpty()) {
-      setLhs(doBinaryCalculation(to_operator(op()), lhs(), rhs()));
-    }
-  }
-
   void input_operator_impl(Operator o) override {
-    auto op_str = to_string(o);
-
     if (isBinaryOp(o)) {
       calculateAppending();
-      setOp(op_str);
+      setOp(o);
       setState(WaitingForRhs);
     } else if (isUnaryOp(o)) {
       if (state() == Model::State::BothReady) {
@@ -138,19 +133,19 @@ class Model : public QObject, public Calculator {
 
       }
     } else if (isEnter(o)) {
-      auto result = doBinaryCalculation(to_operator(op()), lhs(), rhs());
-      setResult(QString::number(result));
+      auto result = doBinaryCalculation(op(), lhs(), rhs());
+      setResult(result);
       setLhs(result);
       setState(LhsReady);
     }
   }
 
-  bool get_result_impl(double &r) {
+  bool get_result_impl(T &r) {
     if (state() == BothReady && passCheck()) {
-      r = doBinaryCalculation(to_operator(op()), lhs(), rhs());
+      r = doBinaryCalculation(op(), lhs(), rhs());
       return true;
     } else if (state() == LhsReady) {
-      r = result().toDouble();
+      r = result();
       return true;
     } else if (state() == WaitingForRhs) {
       r = lhs();
@@ -161,16 +156,19 @@ class Model : public QObject, public Calculator {
   }
 
  private:
-  void setResult(const QString &result) {
+  void setResult(T result) {
     if (result_ != result) {
-      result_ = result;
-      emit resultChanged(result_);
+        result_ = std::move(result);
+        emit resultChanged(QString::number(result_));
     }
   }
   void setState(const State &state) { state_ = state; }
 
  private:
-  bool checkOpPrecondition(Operator op, double operand) {
+     bool passCheck() const { return count_ >= 2 && op() != UNKNOWN_OPERATOR; }
+
+     // calculation precondition check
+  bool isPreconditionMet(Operator op, T operand) {
     if ((op == Sqrt && operand < 0.0) ||
         ((op == Reciproc || op == Divides) && operand == 0.0) ||
         (op == Negate && operand != 0.0)) {
@@ -180,8 +178,15 @@ class Model : public QObject, public Calculator {
     }
   }
 
-  double doUnaryCalculation(Operator o, double operand) {
-    double result = HUGE_VAL;
+  void calculateAppending() {
+      if (state() == BothReady && op() != UNKNOWN_OPERATOR) {
+          setLhs(doBinaryCalculation(op(), lhs(), rhs()));
+      }
+  }
+
+  // calculation of unary and binary ops
+  T doUnaryCalculation(Operator o, T operand) {
+    T result = HUGE_VAL;
 
     if (o == Sqrt) {
       result = std::sqrt(operand);
@@ -194,10 +199,10 @@ class Model : public QObject, public Calculator {
     return result;
   }
 
-  double doBinaryCalculation(Operator o, double lhs, double rhs) {
-    double result = HUGE_VAL;
+  T doBinaryCalculation(Operator o, T lhs, T rhs) {
+    T result = HUGE_VAL;
 
-    if (checkOpPrecondition(o, rhs)) {
+    if (isPreconditionMet(o, rhs)) {
       if (o == Plus) {
         result = lhs + rhs;
       } else if (o == Minus) {
@@ -211,6 +216,7 @@ class Model : public QObject, public Calculator {
 
     return result;
   }
+  // predicts
   bool isEnter(Operator o) const { return o == Enter; }
   bool isUnaryOp(Operator op) const {
     return op == Pow || op == Reciproc || op == Sqrt || op == Negate;
@@ -219,10 +225,11 @@ class Model : public QObject, public Calculator {
   bool isBinaryOp(Operator op) const {
     return op == Plus || op == Minus || op == Multiplies || op == Divides;
   }
-  QString result_;
-  double lhs_;
-  double rhs_;
-  QString op_;
+  // internal state and data members
+  T result_;
+  T lhs_;
+  T rhs_;
+  Operator op_;
   State state_;
 
  private:

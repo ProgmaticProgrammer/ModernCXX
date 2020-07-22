@@ -33,16 +33,16 @@ static QString ops[] = {QObject::tr("+"),
 };
 constexpr auto ops_size = sizeof(ops)/sizeof(ops[0]);
 
-QString to_string (Calculator::Operator val) {
+QString to_string (Operator val) {
     return ops[val];
 }
 
-Calculator::Operator to_operator(const QString& val)
+Operator to_operator(const QString& val)
 {
     auto end = ops + ops_size;
     auto it = std::find(ops, end, val);
     if (it != end)
-        return Calculator::Operator(std::distance(ops, it));
+        return Operator(std::distance(ops, it));
     else
-        return Calculator::Operator::Unknown;
+        return Operator::UNKNOWN_OPERATOR;
 }

@@ -48,24 +48,24 @@ void ModelTest::test_AfterOneInput_LhsReady()
 void ModelTest::test_AfterOnePlusInput_WaitingForRhs()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
 
     QCOMPARE(model.state(), Model::State::WaitingForRhs);
     QCOMPARE(model.lhs(), 1.0);
-    QCOMPARE(model.op(), "+");
+    QCOMPARE(model.op(), Plus);
 }
 
 void ModelTest::test_AfterOnePlusTwoIn_EqIn_ResultAvailable()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(2);
 
-    model.input_operator(Calculator::Enter);
+    model.input_operator(Enter);
 
     QCOMPARE(model.state(), Model::State::LhsReady);
 
-    QCOMPARE(model.op(), "+");
+    QCOMPARE(model.op(), Plus);
     QCOMPARE(model.rhs(), 2.0);
 
     double result = 0;
@@ -78,10 +78,10 @@ void ModelTest::test_AfterOnePlusTwoIn_EqIn_ResultAvailable()
 void ModelTest::test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(2);
 
-    model.input_operator(Calculator::Pow);
+    model.input_operator(Pow);
 
     QCOMPARE(model.state(), Model::State::BothReady);
     QCOMPARE(model.rhs(), 4.0);
@@ -90,10 +90,10 @@ void ModelTest::test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs()
 void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(2);
 
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
 
     QCOMPARE(model.state(), Model::State::WaitingForRhs);
 
@@ -102,18 +102,18 @@ void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
     QCOMPARE(ok, true);
     QCOMPARE(result, 3.0);
     QCOMPARE(model.lhs(), 3.0);
-    QCOMPARE(model.op(), "+");
+    QCOMPARE(model.op(), Plus);
 }
 
 void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(2);
 
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(3);
-    model.input_operator(Calculator::Enter);
+    model.input_operator(Enter);
 
     double result = 0;
     auto ok = model.get_result(result);
@@ -124,12 +124,12 @@ void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
 void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine()
 {
     model.input_operand(1);
-    model.input_operator(Calculator::Plus);
+    model.input_operator(Plus);
     model.input_operand(2);
 
-    model.input_operator(Calculator::Multiplies);
+    model.input_operator(Multiplies);
     model.input_operand(3);
-    model.input_operator(Calculator::Enter);
+    model.input_operator(Enter);
 
     double result = 0;
     auto ok = model.get_result(result);
