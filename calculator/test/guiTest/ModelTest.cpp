@@ -22,6 +22,8 @@
 
 #include "ModelTest.h"
 
+using namespace CalcModel;
+
 Model model;
 
 void ModelTest::init()
@@ -87,7 +89,7 @@ void ModelTest::test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs()
     QCOMPARE(model.rhs(), 4.0);
 }
 
-void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
+void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualsResult()
 {
     model.input_operand(1);
     model.input_operator(Plus);
@@ -105,7 +107,7 @@ void ModelTest::test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult()
     QCOMPARE(model.op(), Plus);
 }
 
-void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
+void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultIsSix()
 {
     model.input_operand(1);
     model.input_operator(Plus);
@@ -121,7 +123,7 @@ void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix()
     QCOMPARE(result, 6.0);
 }
 
-void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine()
+void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultIsNine()
 {
     model.input_operand(1);
     model.input_operator(Plus);
@@ -137,7 +139,7 @@ void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine()
     QCOMPARE(result, 9.0);
 }
 
-void ModelTest::test_AfterTwoInput_PowIn_LhsEqualFour()
+void ModelTest::test_AfterTwoInput_PowIn_LhsIsFour()
 {
     model.input_operand(2);
     model.input_operator(Pow);
@@ -145,7 +147,7 @@ void ModelTest::test_AfterTwoInput_PowIn_LhsEqualFour()
     QCOMPARE(model.state(), Model::State::LhsReady);
     QCOMPARE(model.lhs(), 4.0);
 }
-void ModelTest::test_AfterOnePlusTwoInput_PowIn_LhsEqualFour()
+void ModelTest::test_AfterOnePlusTwoInput_PowIn_LhsIsFour()
 {
     model.input_operand(1);
     model.input_operator(Plus);
@@ -157,6 +159,21 @@ void ModelTest::test_AfterOnePlusTwoInput_PowIn_LhsEqualFour()
     QCOMPARE(model.rhs(), 4.0);
 }
 
+void ModelTest::test_AfterOnePlusTwoInput_EnterTwice_ResultIsFive()
+{
+    model.input_operand(1);
+    model.input_operator(Plus);
+    model.input_operand(2);
+
+    model.input_operator(Enter);
+    model.input_operator(Enter);
+
+
+    double result = 0;
+    auto ok = model.get_result(result);
+    QCOMPARE(ok, true);
+    QCOMPARE(result, 5.0);
+}
 
 #include <iostream>
 #include <QStringList>

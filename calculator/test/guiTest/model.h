@@ -23,6 +23,8 @@
 #include <QtMath>
 #include <cmath>
 
+namespace CalcModel {
+
 enum Operator {
     Plus = 0,
     Minus,
@@ -36,6 +38,11 @@ enum Operator {
     Enter,
     UNKNOWN_OPERATOR,
 };
+
+QString to_string(Operator val);
+Operator to_operator(const QString &val);
+
+
 using T = double;
 //template<class T=double>
 class Calculator {
@@ -53,8 +60,6 @@ class Calculator {
   virtual bool get_result_impl(T &r) = 0;
 };
 
-QString to_string(Operator val);
-Operator to_operator(const QString &val);
 
 //template< class T=double>
 class Model : public QObject, public Calculator {//<T>
@@ -236,6 +241,7 @@ class Model : public QObject, public Calculator {//<T>
   size_t count_;
 };
 
-extern Model defModel;
+//extern Model defModel;
 
+}
 #endif  // GUIINTERFACE_H

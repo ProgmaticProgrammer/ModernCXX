@@ -39,16 +39,19 @@ private slots:
     void test_AfterOnePlusTwoIn_EqIn_ResultAvailable();
 
     void test_AfterOnePlusTwoInput_UnaryOpInput_UnaryAppliesToRhs();
-    void test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualResult();
+    void test_AfterOnePlusTwoInput_BinaryOpInput_LhsEqualsResult();
 
-    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualSix();
+    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultIsSix();
 
     // test mix operators
-    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine();
+    void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultIsNine();
 
     // test unary operators
-    void test_AfterTwoInput_PowIn_LhsEqualFour();
-    void test_AfterOnePlusTwoInput_PowIn_LhsEqualFour();
+    void test_AfterTwoInput_PowIn_LhsIsFour();
+    void test_AfterOnePlusTwoInput_PowIn_LhsIsFour();
+
+    // test multiple enters
+    void test_AfterOnePlusTwoInput_EnterTwice_ResultIsFive();
 private:
 
 };

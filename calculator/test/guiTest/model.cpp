@@ -18,7 +18,9 @@
 
 #include "model.h"
 
-Model defModel;
+namespace CalcModel {
+
+//Model defModel;
 
 static QString ops[] = {QObject::tr("+"),
                         QObject::tr("-"),
@@ -45,4 +47,6 @@ Operator to_operator(const QString& val)
         return Operator(std::distance(ops, it));
     else
         return Operator::UNKNOWN_OPERATOR;
+}
+
 }
