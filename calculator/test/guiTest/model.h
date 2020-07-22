@@ -26,25 +26,24 @@
 namespace CalcModel {
 
 enum Operator {
-    Plus = 0,
-    Minus,
-    Multiplies,
-    Divides,
-    Percent,
-    Negate,
-    Pow,
-    Reciproc,
-    Sqrt,
-    Enter,
-    UNKNOWN_OPERATOR,
+  Plus = 0,
+  Minus,
+  Multiplies,
+  Divides,
+  Percent,
+  Negate,
+  Pow,
+  Reciproc,
+  Sqrt,
+  Enter,
+  UNKNOWN_OPERATOR,
 };
 
 QString to_string(Operator val);
 Operator to_operator(const QString &val);
 
-
 using T = double;
-//template<class T=double>
+// template<class T=double>
 class Calculator {
  public:
   virtual ~Calculator() = default;
@@ -60,9 +59,8 @@ class Calculator {
   virtual bool get_result_impl(T &r) = 0;
 };
 
-
-//template< class T=double>
-class Model : public QObject, public Calculator {//<T>
+// template< class T=double>
+class Model : public QObject, public Calculator {  //<T>
   Q_OBJECT
 
  public:
@@ -101,8 +99,8 @@ class Model : public QObject, public Calculator {//<T>
   void setRhs(T rhs) { rhs_ = rhs; }
   void setOp(Operator op) { op_ = op; }
  signals:
-  //void resultChanged(T newResult);
-     void resultChanged(QString newResult);
+  // void resultChanged(T newResult);
+  void resultChanged(QString newResult);
 
  public:  // for test
   State state() const { return state_; }
@@ -111,18 +109,20 @@ class Model : public QObject, public Calculator {//<T>
   Operator op() const { return op_; }
 
  private:
-
-// implementation of virtual funcs in Calculator interface
+  // implementation of virtual funcs in Calculator interface
   void input_operand_impl(T d) override {
     ++count_;
 
     if (count_ < 2) {
       setLhs(d);
       setState(LhsReady);
-    }
-    else {
-      setRhs(d);
-      setState(BothReady);
+    } else {
+      if (state() != BothReady) {
+        setRhs(d);
+        setState(BothReady);
+      } else {
+        setLhs(d);
+      }
     }
   }
 
@@ -135,7 +135,7 @@ class Model : public QObject, public Calculator {//<T>
       if (state() == Model::State::BothReady) {
         setRhs(doUnaryCalculation(o, rhs()));
       } else if (state() == Model::State::LhsReady) {
-          setLhs(doUnaryCalculation(o, lhs()));
+        setLhs(doUnaryCalculation(o, lhs()));
       }
     } else if (isEnter(o)) {
       auto result = doBinaryCalculation(op(), lhs(), rhs());
@@ -163,16 +163,16 @@ class Model : public QObject, public Calculator {//<T>
  private:
   void setResult(T result) {
     if (result_ != result) {
-        result_ = std::move(result);
-        emit resultChanged(QString::number(result_));
+      result_ = std::move(result);
+      emit resultChanged(QString::number(result_));
     }
   }
   void setState(const State &state) { state_ = state; }
 
  private:
-     bool passCheck() const { return count_ >= 2 && op() != UNKNOWN_OPERATOR; }
+  bool passCheck() const { return count_ >= 2 && op() != UNKNOWN_OPERATOR; }
 
-     // calculation precondition check
+  // calculation precondition check
   bool isPreconditionMet(Operator op, T operand) {
     if ((op == Sqrt && operand < 0.0) ||
         ((op == Reciproc || op == Divides) && operand == 0.0) ||
@@ -184,9 +184,9 @@ class Model : public QObject, public Calculator {//<T>
   }
 
   void calculateAppending() {
-      if (state() == BothReady && op() != UNKNOWN_OPERATOR) {
-          setLhs(doBinaryCalculation(op(), lhs(), rhs()));
-      }
+    if (state() == BothReady && op() != UNKNOWN_OPERATOR) {
+      setLhs(doBinaryCalculation(op(), lhs(), rhs()));
+    }
   }
 
   // calculation of unary and binary ops
@@ -241,7 +241,7 @@ class Model : public QObject, public Calculator {//<T>
   size_t count_;
 };
 
-//extern Model defModel;
+// extern Model defModel;
 
-}
+}  // namespace CalcModel
 #endif  // GUIINTERFACE_H

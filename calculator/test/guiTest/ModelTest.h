@@ -52,6 +52,9 @@ private slots:
 
     // test multiple enters
     void test_AfterOnePlusTwoInput_EnterTwice_ResultIsFive();
+
+    // test new operand replace lhs
+    void test_AfterOnePlusTwoEnter_ThreeEnter_ResultIsFive();
 private:
 
 };

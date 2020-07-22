@@ -175,6 +175,28 @@ void ModelTest::test_AfterOnePlusTwoInput_EnterTwice_ResultIsFive()
     QCOMPARE(result, 5.0);
 }
 
+void ModelTest::test_AfterOnePlusTwoEnter_ThreeEnter_ResultIsFive()
+{
+    model.input_operand(1);
+    model.input_operator(Plus);
+    model.input_operand(2);
+
+    model.input_operand(3);// this replace lhs
+    model.input_operator(Enter);
+    double result = 0;
+    auto ok = model.get_result(result);
+    QCOMPARE(ok, true);
+    QCOMPARE(result, 5.0);
+}
+
+
+
+
+
+
+
+
+
 #include <iostream>
 #include <QStringList>
 #include <unordered_map>
