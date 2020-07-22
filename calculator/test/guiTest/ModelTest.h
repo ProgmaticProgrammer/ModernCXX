@@ -46,6 +46,9 @@ private slots:
     // test mix operators
     void test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine();
 
+    // test unary operators
+    void test_AfterTwoInput_PowIn_LhsEqualFour();
+    void test_AfterOnePlusTwoInput_PowIn_LhsEqualFour();
 private:
 
 };

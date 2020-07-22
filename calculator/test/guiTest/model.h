@@ -129,8 +129,8 @@ class Model : public QObject, public Calculator {//<T>
     } else if (isUnaryOp(o)) {
       if (state() == Model::State::BothReady) {
         setRhs(doUnaryCalculation(o, rhs()));
-      } else if (state() == Model::State::BothReady) {
-
+      } else if (state() == Model::State::LhsReady) {
+          setLhs(doUnaryCalculation(o, lhs()));
       }
     } else if (isEnter(o)) {
       auto result = doBinaryCalculation(op(), lhs(), rhs());

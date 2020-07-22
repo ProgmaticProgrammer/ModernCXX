@@ -137,8 +137,25 @@ void ModelTest::test_AfterOnePlusTwoInput_PlusThreeEnter_ResultEqualNine()
     QCOMPARE(result, 9.0);
 }
 
+void ModelTest::test_AfterTwoInput_PowIn_LhsEqualFour()
+{
+    model.input_operand(2);
+    model.input_operator(Pow);
 
+    QCOMPARE(model.state(), Model::State::LhsReady);
+    QCOMPARE(model.lhs(), 4.0);
+}
+void ModelTest::test_AfterOnePlusTwoInput_PowIn_LhsEqualFour()
+{
+    model.input_operand(1);
+    model.input_operator(Plus);
+    model.input_operand(2);
 
+    model.input_operator(Pow);
+
+    QCOMPARE(model.state(), Model::State::BothReady);
+    QCOMPARE(model.rhs(), 4.0);
+}
 
 
 #include <iostream>
